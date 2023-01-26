@@ -1,6 +1,56 @@
 Name: usercenter.rpc
-ListenOn: 0.0.0.0:8080
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: usercenter.rpc
+ListenOn: 0.0.0.0:9101
+
+# Etcd:
+#   Hosts:
+#   - 127.0.0.1:2379
+#   Key: usercenter.rpc
+
+DatabaseConf:
+  Type: mysql
+  Host: 127.0.0.1
+  Port: 3306
+  DBName: user_center
+  Username: root
+  Password: "123456"
+  MaxOpenConn: 100
+  SSLMode: disable # disable or require
+  CacheTime: 5
+
+Cache:
+  - Host: 127.0.0.1:6379
+
+RedisConf:
+  Host: 127.0.0.1:6379
+  Type: node
+
+JwtAuth:
+  AccessSecret: 31a3696d-ec9a-43d3-b572-c9f765207205
+  AccessExpire: 31536000
+
+Log:
+  ServiceName: coreRpcLogger
+  Mode: console
+  Path: /home/data/logs/core/rpc
+  Encoding: plain
+  Level: info
+  Compress: false
+  KeepDays: 7
+  StackCoolDownMillis: 100
+
+CasbinConf:
+  ModelText: |
+    [request_definition]
+    r = sub, obj, act
+    [policy_definition]
+    p = sub, obj, act
+    [role_definition]
+    g = _, _
+    [policy_effect]
+    e = some(where (p.eft == allow))
+    [matchers]
+    m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+
+# Max Endtime 2037-12-31
+GlobalEnv:
+  Endtime: 2145830400000

@@ -1,18 +1,31 @@
 package config
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/zeromicro/go-zero/core/stores/postgres"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 type DatabaseConf struct {
-	Host         string
-	Port         int
-	Username     string 
-	Password     string 
-	DBName       string 
-	SSLMode      string 
-	Type         string
-	MaxOpenConns *int   
-	Debug        bool
-	CacheTime    int    
+	Host     string
+	Port     int
+	Username string
+	Password string
+	DBName   string
+	SSLMode  string
+	Type     string
+}
+
+func (c DatabaseConf) NewSqlConn() (sqlConn sqlx.SqlConn) {
+	switch c.Type {
+	case "mysql":
+		return sqlx.NewMysql(c.GetDSN())
+	case "postgres":
+		return postgres.New(c.GetDSN())
+	default:
+		return sqlx.NewMysql(c.GetDSN())
+	}
 }
 
 func (c DatabaseConf) MysqlDSN() string {
@@ -30,6 +43,6 @@ func (c DatabaseConf) GetDSN() string {
 	case "postgres":
 		return c.PostgresDSN()
 	default:
-		return "mysql"
+		return "postgres"
 	}
 }
