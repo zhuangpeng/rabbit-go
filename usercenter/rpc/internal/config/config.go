@@ -1,11 +1,10 @@
 package config
 
 import (
-	"backend/rabbit-go/pkg/config"
-
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
+	"github.com/zhuangpeng/rabbit-go/pkg/config"
 )
 
 type Config struct {

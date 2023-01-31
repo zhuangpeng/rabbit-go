@@ -3,10 +3,12 @@ package userlogic
 import (
 	"context"
 
-	"backend/rabbit-go/usercenter/rpc/internal/svc"
-	"backend/rabbit-go/usercenter/rpc/pb"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/model"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/svc"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	sq "github.com/Masterminds/squirrel"
 )
 
 type CreateOrUpdateUserLogic struct {
@@ -24,7 +26,22 @@ func NewCreateOrUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *CreateOrUpdateUserLogic) CreateOrUpdateUser(in *pb.CreateOrUpdateUserReq) (*pb.BaseResp, error) {
-	// todo: add your logic here and delete this line
+	// 创建user对象初始化传入参数
+	user := &model.User{
+		Name    : in.Username,
+		Password: in.Password,
+		Nickname: in.Nickname,
+		RoleId  : in.RoleId,
+		Mobile  : in.Mobile,
+		Email   : in.Email,
+	}
+	// 如果id为空则为创建用户
+	if in.Id == "" {
+		existUser := sq.Select("username,mobile,email").From("user").Where(sq.Eq{
+			"username": user.Name,
+		})
+		logx.Infof("the query user is: %+v", existUser)
+	}
 
 	return &pb.BaseResp{}, nil
 }

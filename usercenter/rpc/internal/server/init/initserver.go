@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"backend/rabbit-go/usercenter/rpc/internal/logic/init"
-	"backend/rabbit-go/usercenter/rpc/internal/svc"
-	"backend/rabbit-go/usercenter/rpc/pb"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/logic/init"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/svc"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
 )
 
 type InitServer struct {

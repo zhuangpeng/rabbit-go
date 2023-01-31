@@ -6,7 +6,7 @@ package client
 import (
 	"context"
 
-	"backend/rabbit-go/usercenter/rpc/pb"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -17,19 +17,12 @@ type (
 	ApiListResp                = pb.ApiListResp
 	ApiPageReq                 = pb.ApiPageReq
 	BaseResp                   = pb.BaseResp
-	CallbackReq                = pb.CallbackReq
 	ChangePasswordReq          = pb.ChangePasswordReq
 	CreateOrUpdateMenuParamReq = pb.CreateOrUpdateMenuParamReq
 	CreateOrUpdateMenuReq      = pb.CreateOrUpdateMenuReq
 	CreateOrUpdateTenantReq    = pb.CreateOrUpdateTenantReq
 	CreateOrUpdateUserReq      = pb.CreateOrUpdateUserReq
 	CreatePolicyReq            = pb.CreatePolicyReq
-	DictionaryDetail           = pb.DictionaryDetail
-	DictionaryDetailList       = pb.DictionaryDetailList
-	DictionaryDetailReq        = pb.DictionaryDetailReq
-	DictionaryInfo             = pb.DictionaryInfo
-	DictionaryList             = pb.DictionaryList
-	DictionaryPageReq          = pb.DictionaryPageReq
 	Empty                      = pb.Empty
 	GetUserListReq             = pb.GetUserListReq
 	IDReq                      = pb.IDReq
@@ -44,12 +37,8 @@ type (
 	MenuRoleInfo               = pb.MenuRoleInfo
 	MenuRoleListResp           = pb.MenuRoleListResp
 	Meta                       = pb.Meta
-	OauthLoginReq              = pb.OauthLoginReq
-	OauthRedirectResp          = pb.OauthRedirectResp
 	PageInfoReq                = pb.PageInfoReq
 	PolicyPartInfo             = pb.PolicyPartInfo
-	ProviderInfo               = pb.ProviderInfo
-	ProviderListResp           = pb.ProviderListResp
 	RoleInfo                   = pb.RoleInfo
 	RoleListResp               = pb.RoleListResp
 	RoleMenuAuthorityReq       = pb.RoleMenuAuthorityReq
@@ -61,9 +50,6 @@ type (
 	TenantListResp             = pb.TenantListResp
 	TenantTreeInfo             = pb.TenantTreeInfo
 	TenantTreeListResp         = pb.TenantTreeListResp
-	TokenInfo                  = pb.TokenInfo
-	TokenListReq               = pb.TokenListReq
-	TokenListResp              = pb.TokenListResp
 	UUIDReq                    = pb.UUIDReq
 	UUIDsReq                   = pb.UUIDsReq
 	UpdatePolicyReq            = pb.UpdatePolicyReq

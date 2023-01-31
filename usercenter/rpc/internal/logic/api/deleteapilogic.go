@@ -3,8 +3,8 @@ package apilogic
 import (
 	"context"
 
-	"backend/rabbit-go/usercenter/rpc/internal/svc"
-	"backend/rabbit-go/usercenter/rpc/pb"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/svc"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,10 +1,9 @@
 package svc
 
 import (
-	"backend/rabbit-go/usercenter/rpc/internal/config"
-	"backend/rabbit-go/usercenter/rpc/internal/model"
-
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/config"
+	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/model"
 )
 
 type ServiceContext struct {
