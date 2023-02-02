@@ -17,7 +17,7 @@ func Insert(s interface{}) (sql string, args []interface{}, err error) {
     logx.Info("the params is: %+v", rt.Kind())
     if rt.Kind() != reflect.Struct {
         logx.Infof("params must a STRUCT, you past a: %v", rv)
-        return "", "", errors.New("input must be struct")
+        return "", nil, errors.New("input must be struct")
     }
     keys, vals := sKV(rv)
     fields := strings.Join(keys, ",")
