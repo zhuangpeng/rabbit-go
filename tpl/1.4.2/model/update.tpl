@@ -75,7 +75,7 @@ func (m *default{{.upperStartCamelObject}}Model) UpdateWithVersion(ctx context.C
 		return err
 	}
 	if updateCount == 0 {
-		return  xerr.NewErrCode(xerr.DB_UPDATE_AFFECTED_ZERO_ERROR)
+		return statuserr.NewNotFoundError(i18n.TargetNotFound)
 	}
 
 	return nil {{end}}

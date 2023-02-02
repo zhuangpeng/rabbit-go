@@ -5,10 +5,9 @@ import (
 	"time"
 
 	globalkey "github.com/zhuangpeng/rabbit-go/pkg/globalKey"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr"
+	"github.com/zhuangpeng/rabbit-go/pkg/utils/dbx"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -48,9 +47,10 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 
 func (m *defaultUserModel) DeleteSoft(ctx context.Context, session sqlx.Session, data *User) error {
 	data.Deleted = globalkey.DelStateYes
-	data.DeletedAt = time.Now()
+	now := time.Now()
+	data.DeletedAt = dbx.NewNullTime(&now)
 	if err := m.UpdateWithVersion(ctx, session, data); err != nil {
-		return errors.Wrapf(xerr.NewErrMsg("删除数据失败"), "UserModel delete err : %+v", err)
+		return err
 	}
 	return nil
 }

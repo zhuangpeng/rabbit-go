@@ -6,7 +6,8 @@ import (
 	{{if .time}}"time"{{end}}
 
 	globalkey "github.com/zhuangpeng/rabbit-go/pkg/globalKey"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr"
+	"github.com/zhuangpeng/rabbit-go/pkg/xerr/statuserr"
+	"github.com/zhuangpeng/rabbit-go/pkg/i18n"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"

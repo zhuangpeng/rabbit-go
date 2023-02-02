@@ -5,12 +5,11 @@ import (
 	"time"
 
 	globalkey "github.com/zhuangpeng/rabbit-go/pkg/globalKey"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr"
+	"github.com/zhuangpeng/rabbit-go/pkg/utils/dbx"
 
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/Masterminds/squirrel"
-	"github.com/pkg/errors"
 )
 
 {{else}}
@@ -57,9 +56,10 @@ func New{{.upperStartCamelObject}}Model(conn sqlx.SqlConn{{if .withCache}}, c ca
 
 func (m *default{{.upperStartCamelObject}}Model) DeleteSoft(ctx context.Context,session sqlx.Session,data *{{.upperStartCamelObject}}) error {
 	data.Deleted = globalkey.DelStateYes
-	data.DeletedAt = time.Now()
+	now := time.Now()
+	data.DeletedAt = dbx.NewNullTime(&now)
 	if err:= m.UpdateWithVersion(ctx,session, data);err!= nil{
-		return errors.Wrapf(xerr.NewErrMsg("删除数据失败"),"{{.upperStartCamelObject}}Model delete err : %+v",err)
+		return err
 	}
 	return nil
 }

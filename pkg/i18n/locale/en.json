@@ -1,0 +1,141 @@
+{
+	"common": {
+		"success": "Successfully",
+		"failed": "Failed",
+		"updateSuccess": "Update successfully",
+		"updateFailed": "Update failed",
+		"createSuccess": "Create successfully",
+		"createFailed": "Create failed",
+		"deleteSuccess": "Delete successfully",
+		"deleteFailed": "Delete failed",
+		"changeStatusSuccess": "Change status successfully",
+		"changeStatusFailed": "Change status failed",
+		"targetNotExist": "Target does not exist",
+		"databaseError": "Database error",
+		"redisError": "Redis error"
+	},
+	"apiDesc": {
+		"userLogin": "Log in (Required)",
+		"userRegister": "Sign up (Required)",
+		"userChangePassword": "Change user's password",
+		"userInfo": "Get user's information (Required)",
+		"userList": "Get user list",
+		"userModify": "Modify user information",
+		"userPermissions": "Get user permission code (Required)",
+		"userProfile": "Get user profile (Required)",
+		"updateProfile": "Modify user's profile (Required)",
+		"createOrUpdateUser": "Create or update a user",
+		"deleteUser": "Delete a user",
+		"batchDeleteUser": "Batch delete users",
+		"logout": "Log out (Required)",
+		"updateUserStatus": "Update user's status",
+		"createOrUpdateRole": "Create or update role information",
+		"deleteRole": "Delete role information",
+		"roleList": "Get role list",
+		"setRoleStatus": "Set role status information",
+		"createOrUpdateMenu": "Create or update menu information",
+		"menuInfo": "Get the menu information",
+		"menuList": "Get menu list",
+		"deleteMenu": "Delete menu information",
+		"roleMenu": "Get role's Menu List (Required)",
+		"createOrUpdateMenuParam": "Create or update menu parameters",
+		"deleteMenuParam": "Delete menu extra parameters",
+		"menuParamListByMenuId": "Get menu extra parameters by menu ID",
+		"createOrUpdateApi": "Create or update API information",
+		"deleteAPI": "Delete API",
+		"APIInfo": "Get API information",
+		"APIList": "Get API list",
+		"authorityApiList": "Get API list for authority",
+		"createOrUpdateApiAuthority": "Create or update API authorization information",
+		"APIAuthorityOfRole": "Get API authorization information of role",
+		"createOrUpdateMenuAuthority": "Create or update menu authorization information",
+		"menuAuthorityOfRole": "Get menu authorization information of role",
+		"captcha": "Get captcha information (Required)",
+		"uploadFile": "Upload",
+		"fileList": "File list",
+		"deleteFile": "Delete a file",
+		"updateFileInfo": "Update the file information",
+		"setPublicStatus": "Change the file public status",
+		"downloadFile": "Download file",
+		"createOrUpdateDictionary": "Create or update dictionary information",
+		"deleteDictionary": "Delete dictionary information",
+		"getDictionaryList": "Get dictionary list",
+		"createOrUpdateDictionaryDetail": "Create or update a dictionary KV information",
+		"deleteDictionaryDetail": "Delete dictionary KV information",
+		"getDictionaryListDetail": "Get dictionary detail list by dictionary name",
+		"createOrUpdateProvider": "Create or update provider information",
+		"deleteProvider": "Delete a provider information",
+		"geProviderList": "Get provider list",
+		"oauthLogin": "Third-party log in",
+		"createOrUpdateToken": "Create or update a token",
+		"deleteToken": "Delete a token",
+		"getTokenList": "Get token list",
+		"setTokenStatus": "Set token's status",
+		"batchDeleteToken": "Batch delete tokens",
+		"forceLoggingOut": "Force logging out"
+	},
+	"route": {
+		"dashboard": "Dashboard",
+		"systemManagementTitle": "System",
+		"menuManagementTitle": "Menu",
+		"roleManagementTitle": "Role",
+		"apiManagementTitle": "API",
+		"userManagementTitle": "User",
+		"fileManagementTitle": "File",
+		"userProfileTitle": "Profile",
+		"dictionaryManagementTitle": "Dictionary",
+		"dictionaryDetailManagementTitle": "Key/Value Management",
+		"oauthManagement": "Oauth",
+		"tokenManagement": "Token",
+		"otherPages": "Other pages"
+	},
+	"login": {
+		"loginSuccessTitle": "Login successful",
+		"signupSuccessTitle": "Sign up successful",
+		"signupUserExist": "Username or email address had been registered",
+		"userAlreadyExist": "user already exist",
+		"mobileAlreadyExist": "mobile already exist",
+		"emailAlreadyExist": "email already exist",
+		"userNotExist": "User does not register",
+		"wrongCaptcha": "Wrong captcha",
+		"wrongUsernameOrPassword": "Wrong username or password",
+		"requireLogin": "Please log in again"
+	},
+	"menu": {
+		"deleteChildrenDesc": "Please delete menu's children first",
+		"menuNotExists": "Menu does not exist",
+		"menuAlreadyExists": "Menu already exists",
+		"parentNotExist": "The parent does not exist"
+	},
+	"role": {
+		"admin": "Administrator",
+		"stuff": "Stuff",
+		"seller": "Seller",
+		"member": "Member",
+		"changeStatusSuccess": "Change role status successfully",
+		"changeStatusFailed": "Change role status failed",
+		"duplicateRoleValue": "Duplicate role value",
+		"userExists": "Please delete users who belong to this role",
+		"roleForbidden": "Your role is forbidden"
+	},
+	"user": {
+		"wrongPassword": "Wrong password"
+	},
+	"init": {
+		"alreadyInit": "The database had been initialized.",
+		"initializeIsRunning": "The initialization is running..."
+	},
+	"dictionary": {
+		"createDetailFailed": "Create Key/Value failed, key had been used"
+	},
+	"oauth": {
+		"createAccount": "Please register an account with this email or bind the email to an account"
+	},
+	"casbin": {
+		"removeFailed": "Fail to remove old policies",
+		"addFailed": "Fail to add new policies"
+	},
+	"tenant": {
+		"parentNotExists": "tenant parent not exist"
+	}
+}
