@@ -7,8 +7,8 @@ require (
 	github.com/Masterminds/squirrel v1.5.3
 	github.com/casbin/casbin/v2 v2.60.0
 	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/jinzhu/copier v0.3.5
 	github.com/nicksnyder/go-i18n/v2 v2.2.1
-	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
 	github.com/suyuan32/simple-admin-core v0.2.2
 	github.com/zeromicro/go-zero v1.4.4

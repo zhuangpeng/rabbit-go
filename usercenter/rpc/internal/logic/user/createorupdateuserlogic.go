@@ -33,15 +33,13 @@ func NewCreateOrUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *CreateOrUpdateUserLogic) CreateOrUpdateUser(in *pb.CreateOrUpdateUserReq) (*pb.BaseResp, error) {
 
 	user := model.User{
+		Id:       in.Id,
 		Name:     in.Username,
-		Password: utils.BcryptEncrypt(in.Password) ,
+		Password: utils.BcryptEncrypt(in.Password),
 		Nickname: in.Nickname,
-		RoleId:   in.RoleId,
 		Mobile:   in.Mobile,
 		Email:    in.Email,
 	}
-
-
 
 	// 如果id为空则为创建用户
 	if in.Id == "" {
@@ -87,7 +85,7 @@ func (l *CreateOrUpdateUserLogic) CreateOrUpdateUser(in *pb.CreateOrUpdateUserRe
 
 		// 创建用户信息
 		user.Id = uuidx.NewUUID().String()
-		result, err := l.svcCtx.UserModel.InsertWithoutZero(l.ctx, &user)
+		result, err := l.svcCtx.UserModel.Insert(l.ctx, true, nil, &user)
 		if err != nil {
 			logx.Errorw(err.Error(), logx.Field("insert user err", user))
 			return nil, statuserr.NewInternalError(i18n.DatabaseError)
@@ -95,5 +93,7 @@ func (l *CreateOrUpdateUserLogic) CreateOrUpdateUser(in *pb.CreateOrUpdateUserRe
 		logx.Infof("the result is: %+v", result)
 	}
 
-	return &pb.BaseResp{}, nil
+	return &pb.BaseResp{
+		Msg: i18n.Success,
+	}, nil
 }

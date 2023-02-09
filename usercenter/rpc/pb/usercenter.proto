@@ -128,14 +128,12 @@ message ChangePasswordReq {
 
 message CreateOrUpdateUserReq {
   string id = 1;
-  string avatar = 2;
-  string role_id = 3;
-  string mobile = 4;
-  string email = 5;
-  int64 status = 6;
-  string username = 7;
-  string nickname = 8;
-  string password = 9;
+  string username = 2;
+  string nickname = 3;
+  string password = 4;
+  string avatar = 5;
+  string mobile = 6;
+  string email = 7;
 }
 
 message UserInfoResp {

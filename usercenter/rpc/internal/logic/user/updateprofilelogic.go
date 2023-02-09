@@ -24,7 +24,6 @@ func NewUpdateProfileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upd
 }
 
 func (l *UpdateProfileLogic) UpdateProfile(in *pb.UpdateProfileReq) (*pb.BaseResp, error) {
-	// todo: add your logic here and delete this line
-
+	
 	return &pb.BaseResp{}, nil
 }
