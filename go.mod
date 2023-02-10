@@ -7,7 +7,8 @@ require (
 	github.com/Masterminds/squirrel v1.5.3
 	github.com/casbin/casbin/v2 v2.60.0
 	github.com/gofrs/uuid v4.4.0+incompatible
-	github.com/jinzhu/copier v0.3.5
+	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/mojocn/base64Captcha v1.3.5
 	github.com/nicksnyder/go-i18n/v2 v2.2.1
 	github.com/stretchr/testify v1.8.1
 	github.com/suyuan32/simple-admin-core v0.2.2
@@ -65,7 +66,6 @@ require (
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/mojocn/base64Captcha v1.3.5 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/openzipkin/zipkin-go v0.4.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
