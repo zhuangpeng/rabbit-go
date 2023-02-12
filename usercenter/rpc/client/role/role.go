@@ -13,56 +13,80 @@ import (
 )
 
 type (
-	ApiInfo                    = pb.ApiInfo
-	ApiListResp                = pb.ApiListResp
-	ApiPageReq                 = pb.ApiPageReq
-	BaseResp                   = pb.BaseResp
-	ChangePasswordReq          = pb.ChangePasswordReq
-	CreateOrUpdateMenuParamReq = pb.CreateOrUpdateMenuParamReq
-	CreateOrUpdateMenuReq      = pb.CreateOrUpdateMenuReq
-	CreateOrUpdateTenantReq    = pb.CreateOrUpdateTenantReq
-	CreateOrUpdateUserReq      = pb.CreateOrUpdateUserReq
-	CreatePolicyReq            = pb.CreatePolicyReq
-	Empty                      = pb.Empty
-	GetUserListReq             = pb.GetUserListReq
-	IDReq                      = pb.IDReq
-	IDResp                     = pb.IDResp
-	IDsReq                     = pb.IDsReq
-	LoginReq                   = pb.LoginReq
-	LoginResp                  = pb.LoginResp
-	MenuInfo                   = pb.MenuInfo
-	MenuInfoList               = pb.MenuInfoList
-	MenuParamListResp          = pb.MenuParamListResp
-	MenuParamResp              = pb.MenuParamResp
-	MenuRoleInfo               = pb.MenuRoleInfo
-	MenuRoleListResp           = pb.MenuRoleListResp
-	Meta                       = pb.Meta
-	PageInfoReq                = pb.PageInfoReq
-	PolicyPartInfo             = pb.PolicyPartInfo
-	RoleInfo                   = pb.RoleInfo
-	RoleListResp               = pb.RoleListResp
-	RoleMenuAuthorityReq       = pb.RoleMenuAuthorityReq
-	RoleMenuAuthorityResp      = pb.RoleMenuAuthorityResp
-	StatusCodeReq              = pb.StatusCodeReq
-	StatusCodeUUIDReq          = pb.StatusCodeUUIDReq
-	TenantInfo                 = pb.TenantInfo
-	TenantListReq              = pb.TenantListReq
-	TenantListResp             = pb.TenantListResp
-	TenantTreeInfo             = pb.TenantTreeInfo
-	TenantTreeListResp         = pb.TenantTreeListResp
-	UUIDReq                    = pb.UUIDReq
-	UUIDsReq                   = pb.UUIDsReq
-	UpdatePolicyReq            = pb.UpdatePolicyReq
-	UpdateProfileReq           = pb.UpdateProfileReq
-	UserInfoResp               = pb.UserInfoResp
-	UserListResp               = pb.UserListResp
+	ApiInfo               = pb.ApiInfo
+	BaseResp              = pb.BaseResp
+	BatchCreateUserReq    = pb.BatchCreateUserReq
+	ChangeDept            = pb.ChangeDept
+	ChangePasswdReq       = pb.ChangePasswdReq
+	ChangePositionReq     = pb.ChangePositionReq
+	CreateApiReq          = pb.CreateApiReq
+	CreateMenuParamReq    = pb.CreateMenuParamReq
+	CreateMenuReq         = pb.CreateMenuReq
+	CreateRoleReq         = pb.CreateRoleReq
+	CreateStationReq      = pb.CreateStationReq
+	CreateTenantReq       = pb.CreateTenantReq
+	CreateTokenReq        = pb.CreateTokenReq
+	CreateUserReq         = pb.CreateUserReq
+	Empty                 = pb.Empty
+	GetApiListResp        = pb.GetApiListResp
+	GetApiResp            = pb.GetApiResp
+	GetMenuListReq        = pb.GetMenuListReq
+	GetMenuListResp       = pb.GetMenuListResp
+	GetParamsByMenuResp   = pb.GetParamsByMenuResp
+	GetRoleResp           = pb.GetRoleResp
+	GetStationByUserResp  = pb.GetStationByUserResp
+	GetStationListResp    = pb.GetStationListResp
+	GetStationResp        = pb.GetStationResp
+	GetTeantListResp      = pb.GetTeantListResp
+	GetTenantResp         = pb.GetTenantResp
+	GetTokenListReq       = pb.GetTokenListReq
+	GetTokenListResp      = pb.GetTokenListResp
+	GetTokenResp          = pb.GetTokenResp
+	GrantApiToRoleReq     = pb.GrantApiToRoleReq
+	GrantMenuToRoleReq    = pb.GrantMenuToRoleReq
+	GrantMenusToRoleReq   = pb.GrantMenusToRoleReq
+	GrantRoleReq          = pb.GrantRoleReq
+	GrantRoleToStationReq = pb.GrantRoleToStationReq
+	IDReq                 = pb.IDReq
+	IDResp                = pb.IDResp
+	IDsReq                = pb.IDsReq
+	IDsResp               = pb.IDsResp
+	LoginReq              = pb.LoginReq
+	LoginResp             = pb.LoginResp
+	MenuInfo              = pb.MenuInfo
+	MenuParamInfo         = pb.MenuParamInfo
+	Meta                  = pb.Meta
+	PageInfoReq           = pb.PageInfoReq
+	ReplaceUserReq        = pb.ReplaceUserReq
+	RoleInfo              = pb.RoleInfo
+	RoleListResp          = pb.RoleListResp
+	StationInfo           = pb.StationInfo
+	StationUserReq        = pb.StationUserReq
+	StatusCodeReq         = pb.StatusCodeReq
+	TSRU                  = pb.TSRU
+	TenantInfo            = pb.TenantInfo
+	TokenInfo             = pb.TokenInfo
+	UpdateApiReq          = pb.UpdateApiReq
+	UpdateMenuParamsReq   = pb.UpdateMenuParamsReq
+	UpdateMenuReq         = pb.UpdateMenuReq
+	UpdatePeriodReq       = pb.UpdatePeriodReq
+	UpdateProfileReq      = pb.UpdateProfileReq
+	UpdateRoleReq         = pb.UpdateRoleReq
+	UpdateStationReq      = pb.UpdateStationReq
+	UpdateStatusReq       = pb.UpdateStatusReq
+	UpdateTenantReq       = pb.UpdateTenantReq
+	UserInfoResp          = pb.UserInfoResp
+	UserListResp          = pb.UserListResp
 
 	Role interface {
-		CreateOrUpdateRole(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		CreateRole(ctx context.Context, in *CreateRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
 		DeleteRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-		GetRoleById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleInfo, error)
+		UpdateRole(ctx context.Context, in *UpdateRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GetRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetRoleResp, error)
+		GrantMenuToRole(ctx context.Context, in *GrantMenuToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GrantApiToRole(ctx context.Context, in *GrantApiToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GrantRoleToStation(ctx context.Context, in *GrantRoleToStationReq, opts ...grpc.CallOption) (*BaseResp, error)
 		GetRoleList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*RoleListResp, error)
-		UpdateRoleStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error)
 	}
 
 	defaultRole struct {
@@ -76,9 +100,9 @@ func NewRole(cli zrpc.Client) Role {
 	}
 }
 
-func (m *defaultRole) CreateOrUpdateRole(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+func (m *defaultRole) CreateRole(ctx context.Context, in *CreateRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewRoleClient(m.cli.Conn())
-	return client.CreateOrUpdateRole(ctx, in, opts...)
+	return client.CreateRole(ctx, in, opts...)
 }
 
 func (m *defaultRole) DeleteRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
@@ -86,17 +110,32 @@ func (m *defaultRole) DeleteRole(ctx context.Context, in *IDReq, opts ...grpc.Ca
 	return client.DeleteRole(ctx, in, opts...)
 }
 
-func (m *defaultRole) GetRoleById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleInfo, error) {
+func (m *defaultRole) UpdateRole(ctx context.Context, in *UpdateRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewRoleClient(m.cli.Conn())
-	return client.GetRoleById(ctx, in, opts...)
+	return client.UpdateRole(ctx, in, opts...)
+}
+
+func (m *defaultRole) GetRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetRoleResp, error) {
+	client := pb.NewRoleClient(m.cli.Conn())
+	return client.GetRole(ctx, in, opts...)
+}
+
+func (m *defaultRole) GrantMenuToRole(ctx context.Context, in *GrantMenuToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewRoleClient(m.cli.Conn())
+	return client.GrantMenuToRole(ctx, in, opts...)
+}
+
+func (m *defaultRole) GrantApiToRole(ctx context.Context, in *GrantApiToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewRoleClient(m.cli.Conn())
+	return client.GrantApiToRole(ctx, in, opts...)
+}
+
+func (m *defaultRole) GrantRoleToStation(ctx context.Context, in *GrantRoleToStationReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewRoleClient(m.cli.Conn())
+	return client.GrantRoleToStation(ctx, in, opts...)
 }
 
 func (m *defaultRole) GetRoleList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*RoleListResp, error) {
 	client := pb.NewRoleClient(m.cli.Conn())
 	return client.GetRoleList(ctx, in, opts...)
-}
-
-func (m *defaultRole) UpdateRoleStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error) {
-	client := pb.NewRoleClient(m.cli.Conn())
-	return client.UpdateRoleStatus(ctx, in, opts...)
 }

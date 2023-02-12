@@ -18,7 +18,7 @@ type BaseDataInfo {
 // The basic response with data | 基础带数据信息
 type BaseListInfo {
     Total uint64 `json:"total"`
-    Data string `json:"data,omitempty"`
+    Data  string `json:"data,omitempty"`
 }
 
 // The basic response without data | 基础不带数据信息
@@ -34,7 +34,7 @@ type SimpleMsg {
 
 // The page request parameters | 列表请求参数
 type PageInfo {
-    Page   uint64    `json:"page" validate:"number"`
+    Page      uint64    `json:"page" validate:"number"`
     PageSize  uint64    `json:"pageSize" validate:"number,max=100000"`
 }
 
@@ -58,5 +58,6 @@ type BaseInfo {
     Id        string    `json:"id"`
     CreatedAt int64     `json:"createdAt,optional"`
     UpdatedAt int64     `json:"updatedAt,optional"`
-    DeleteAt  int64     `json:"deletedAt,optional"
+    DeleteAt  int64     `json:"deletedAt,optional"`
 }
+

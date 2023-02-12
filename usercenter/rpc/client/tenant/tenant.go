@@ -13,54 +13,80 @@ import (
 )
 
 type (
-	ApiInfo                    = pb.ApiInfo
-	ApiListResp                = pb.ApiListResp
-	ApiPageReq                 = pb.ApiPageReq
-	BaseResp                   = pb.BaseResp
-	ChangePasswordReq          = pb.ChangePasswordReq
-	CreateOrUpdateMenuParamReq = pb.CreateOrUpdateMenuParamReq
-	CreateOrUpdateMenuReq      = pb.CreateOrUpdateMenuReq
-	CreateOrUpdateTenantReq    = pb.CreateOrUpdateTenantReq
-	CreateOrUpdateUserReq      = pb.CreateOrUpdateUserReq
-	CreatePolicyReq            = pb.CreatePolicyReq
-	Empty                      = pb.Empty
-	GetUserListReq             = pb.GetUserListReq
-	IDReq                      = pb.IDReq
-	IDResp                     = pb.IDResp
-	IDsReq                     = pb.IDsReq
-	LoginReq                   = pb.LoginReq
-	LoginResp                  = pb.LoginResp
-	MenuInfo                   = pb.MenuInfo
-	MenuInfoList               = pb.MenuInfoList
-	MenuParamListResp          = pb.MenuParamListResp
-	MenuParamResp              = pb.MenuParamResp
-	MenuRoleInfo               = pb.MenuRoleInfo
-	MenuRoleListResp           = pb.MenuRoleListResp
-	Meta                       = pb.Meta
-	PageInfoReq                = pb.PageInfoReq
-	PolicyPartInfo             = pb.PolicyPartInfo
-	RoleInfo                   = pb.RoleInfo
-	RoleListResp               = pb.RoleListResp
-	RoleMenuAuthorityReq       = pb.RoleMenuAuthorityReq
-	RoleMenuAuthorityResp      = pb.RoleMenuAuthorityResp
-	StatusCodeReq              = pb.StatusCodeReq
-	StatusCodeUUIDReq          = pb.StatusCodeUUIDReq
-	TenantInfo                 = pb.TenantInfo
-	TenantListReq              = pb.TenantListReq
-	TenantListResp             = pb.TenantListResp
-	TenantTreeInfo             = pb.TenantTreeInfo
-	TenantTreeListResp         = pb.TenantTreeListResp
-	UUIDReq                    = pb.UUIDReq
-	UUIDsReq                   = pb.UUIDsReq
-	UpdatePolicyReq            = pb.UpdatePolicyReq
-	UpdateProfileReq           = pb.UpdateProfileReq
-	UserInfoResp               = pb.UserInfoResp
-	UserListResp               = pb.UserListResp
+	ApiInfo               = pb.ApiInfo
+	BaseResp              = pb.BaseResp
+	BatchCreateUserReq    = pb.BatchCreateUserReq
+	ChangeDept            = pb.ChangeDept
+	ChangePasswdReq       = pb.ChangePasswdReq
+	ChangePositionReq     = pb.ChangePositionReq
+	CreateApiReq          = pb.CreateApiReq
+	CreateMenuParamReq    = pb.CreateMenuParamReq
+	CreateMenuReq         = pb.CreateMenuReq
+	CreateRoleReq         = pb.CreateRoleReq
+	CreateStationReq      = pb.CreateStationReq
+	CreateTenantReq       = pb.CreateTenantReq
+	CreateTokenReq        = pb.CreateTokenReq
+	CreateUserReq         = pb.CreateUserReq
+	Empty                 = pb.Empty
+	GetApiListResp        = pb.GetApiListResp
+	GetApiResp            = pb.GetApiResp
+	GetMenuListReq        = pb.GetMenuListReq
+	GetMenuListResp       = pb.GetMenuListResp
+	GetParamsByMenuResp   = pb.GetParamsByMenuResp
+	GetRoleResp           = pb.GetRoleResp
+	GetStationByUserResp  = pb.GetStationByUserResp
+	GetStationListResp    = pb.GetStationListResp
+	GetStationResp        = pb.GetStationResp
+	GetTeantListResp      = pb.GetTeantListResp
+	GetTenantResp         = pb.GetTenantResp
+	GetTokenListReq       = pb.GetTokenListReq
+	GetTokenListResp      = pb.GetTokenListResp
+	GetTokenResp          = pb.GetTokenResp
+	GrantApiToRoleReq     = pb.GrantApiToRoleReq
+	GrantMenuToRoleReq    = pb.GrantMenuToRoleReq
+	GrantMenusToRoleReq   = pb.GrantMenusToRoleReq
+	GrantRoleReq          = pb.GrantRoleReq
+	GrantRoleToStationReq = pb.GrantRoleToStationReq
+	IDReq                 = pb.IDReq
+	IDResp                = pb.IDResp
+	IDsReq                = pb.IDsReq
+	IDsResp               = pb.IDsResp
+	LoginReq              = pb.LoginReq
+	LoginResp             = pb.LoginResp
+	MenuInfo              = pb.MenuInfo
+	MenuParamInfo         = pb.MenuParamInfo
+	Meta                  = pb.Meta
+	PageInfoReq           = pb.PageInfoReq
+	ReplaceUserReq        = pb.ReplaceUserReq
+	RoleInfo              = pb.RoleInfo
+	RoleListResp          = pb.RoleListResp
+	StationInfo           = pb.StationInfo
+	StationUserReq        = pb.StationUserReq
+	StatusCodeReq         = pb.StatusCodeReq
+	TSRU                  = pb.TSRU
+	TenantInfo            = pb.TenantInfo
+	TokenInfo             = pb.TokenInfo
+	UpdateApiReq          = pb.UpdateApiReq
+	UpdateMenuParamsReq   = pb.UpdateMenuParamsReq
+	UpdateMenuReq         = pb.UpdateMenuReq
+	UpdatePeriodReq       = pb.UpdatePeriodReq
+	UpdateProfileReq      = pb.UpdateProfileReq
+	UpdateRoleReq         = pb.UpdateRoleReq
+	UpdateStationReq      = pb.UpdateStationReq
+	UpdateStatusReq       = pb.UpdateStatusReq
+	UpdateTenantReq       = pb.UpdateTenantReq
+	UserInfoResp          = pb.UserInfoResp
+	UserListResp          = pb.UserListResp
 
 	Tenant interface {
-		CreateOrUpdateTenant(ctx context.Context, in *CreateOrUpdateTenantReq, opts ...grpc.CallOption) (*IDResp, error)
-		DeleteTenant(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error)
-		GetTenantTreeList(ctx context.Context, in *TenantListReq, opts ...grpc.CallOption) (*TenantListResp, error)
+		CreateTenant(ctx context.Context, in *CreateTenantReq, opts ...grpc.CallOption) (*BaseResp, error)
+		DeleteTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+		UpdateTenant(ctx context.Context, in *UpdateTenantReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GetTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTenantResp, error)
+		GrantMenuToRole(ctx context.Context, in *GrantMenusToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+		UpdateTenantPeriod(ctx context.Context, in *UpdatePeriodReq, opts ...grpc.CallOption) (*BaseResp, error)
+		UpdateTenantStatus(ctx context.Context, in *UpdateStatusReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GetTenantList(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTeantListResp, error)
 	}
 
 	defaultTenant struct {
@@ -74,17 +100,42 @@ func NewTenant(cli zrpc.Client) Tenant {
 	}
 }
 
-func (m *defaultTenant) CreateOrUpdateTenant(ctx context.Context, in *CreateOrUpdateTenantReq, opts ...grpc.CallOption) (*IDResp, error) {
+func (m *defaultTenant) CreateTenant(ctx context.Context, in *CreateTenantReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewTenantClient(m.cli.Conn())
-	return client.CreateOrUpdateTenant(ctx, in, opts...)
+	return client.CreateTenant(ctx, in, opts...)
 }
 
-func (m *defaultTenant) DeleteTenant(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (m *defaultTenant) DeleteTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewTenantClient(m.cli.Conn())
 	return client.DeleteTenant(ctx, in, opts...)
 }
 
-func (m *defaultTenant) GetTenantTreeList(ctx context.Context, in *TenantListReq, opts ...grpc.CallOption) (*TenantListResp, error) {
+func (m *defaultTenant) UpdateTenant(ctx context.Context, in *UpdateTenantReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewTenantClient(m.cli.Conn())
-	return client.GetTenantTreeList(ctx, in, opts...)
+	return client.UpdateTenant(ctx, in, opts...)
+}
+
+func (m *defaultTenant) GetTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTenantResp, error) {
+	client := pb.NewTenantClient(m.cli.Conn())
+	return client.GetTenant(ctx, in, opts...)
+}
+
+func (m *defaultTenant) GrantMenuToRole(ctx context.Context, in *GrantMenusToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewTenantClient(m.cli.Conn())
+	return client.GrantMenuToRole(ctx, in, opts...)
+}
+
+func (m *defaultTenant) UpdateTenantPeriod(ctx context.Context, in *UpdatePeriodReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewTenantClient(m.cli.Conn())
+	return client.UpdateTenantPeriod(ctx, in, opts...)
+}
+
+func (m *defaultTenant) UpdateTenantStatus(ctx context.Context, in *UpdateStatusReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := pb.NewTenantClient(m.cli.Conn())
+	return client.UpdateTenantStatus(ctx, in, opts...)
+}
+
+func (m *defaultTenant) GetTenantList(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTeantListResp, error) {
+	client := pb.NewTenantClient(m.cli.Conn())
+	return client.GetTenantList(ctx, in, opts...)
 }

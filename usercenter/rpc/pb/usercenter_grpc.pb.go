@@ -18,263 +18,20 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// InitClient is the client API for Init service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type InitClient interface {
-	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
-}
-
-type initClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewInitClient(cc grpc.ClientConnInterface) InitClient {
-	return &initClient{cc}
-}
-
-func (c *initClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {
-	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Init/InitDatabase", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// InitServer is the server API for Init service.
-// All implementations must embed UnimplementedInitServer
-// for forward compatibility
-type InitServer interface {
-	InitDatabase(context.Context, *Empty) (*BaseResp, error)
-	mustEmbedUnimplementedInitServer()
-}
-
-// UnimplementedInitServer must be embedded to have forward compatible implementations.
-type UnimplementedInitServer struct {
-}
-
-func (UnimplementedInitServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
-}
-func (UnimplementedInitServer) mustEmbedUnimplementedInitServer() {}
-
-// UnsafeInitServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to InitServer will
-// result in compilation errors.
-type UnsafeInitServer interface {
-	mustEmbedUnimplementedInitServer()
-}
-
-func RegisterInitServer(s grpc.ServiceRegistrar, srv InitServer) {
-	s.RegisterService(&Init_ServiceDesc, srv)
-}
-
-func _Init_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(InitServer).InitDatabase(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Init/InitDatabase",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InitServer).InitDatabase(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Init_ServiceDesc is the grpc.ServiceDesc for Init service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var Init_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Init",
-	HandlerType: (*InitServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "InitDatabase",
-			Handler:    _Init_InitDatabase_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "usercenter.proto",
-}
-
-// TenantClient is the client API for Tenant service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TenantClient interface {
-	CreateOrUpdateTenant(ctx context.Context, in *CreateOrUpdateTenantReq, opts ...grpc.CallOption) (*IDResp, error)
-	DeleteTenant(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetTenantTreeList(ctx context.Context, in *TenantListReq, opts ...grpc.CallOption) (*TenantListResp, error)
-}
-
-type tenantClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewTenantClient(cc grpc.ClientConnInterface) TenantClient {
-	return &tenantClient{cc}
-}
-
-func (c *tenantClient) CreateOrUpdateTenant(ctx context.Context, in *CreateOrUpdateTenantReq, opts ...grpc.CallOption) (*IDResp, error) {
-	out := new(IDResp)
-	err := c.cc.Invoke(ctx, "/pb.Tenant/CreateOrUpdateTenant", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *tenantClient) DeleteTenant(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error) {
-	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Tenant/DeleteTenant", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *tenantClient) GetTenantTreeList(ctx context.Context, in *TenantListReq, opts ...grpc.CallOption) (*TenantListResp, error) {
-	out := new(TenantListResp)
-	err := c.cc.Invoke(ctx, "/pb.Tenant/GetTenantTreeList", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// TenantServer is the server API for Tenant service.
-// All implementations must embed UnimplementedTenantServer
-// for forward compatibility
-type TenantServer interface {
-	CreateOrUpdateTenant(context.Context, *CreateOrUpdateTenantReq) (*IDResp, error)
-	DeleteTenant(context.Context, *UUIDReq) (*BaseResp, error)
-	GetTenantTreeList(context.Context, *TenantListReq) (*TenantListResp, error)
-	mustEmbedUnimplementedTenantServer()
-}
-
-// UnimplementedTenantServer must be embedded to have forward compatible implementations.
-type UnimplementedTenantServer struct {
-}
-
-func (UnimplementedTenantServer) CreateOrUpdateTenant(context.Context, *CreateOrUpdateTenantReq) (*IDResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateTenant not implemented")
-}
-func (UnimplementedTenantServer) DeleteTenant(context.Context, *UUIDReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteTenant not implemented")
-}
-func (UnimplementedTenantServer) GetTenantTreeList(context.Context, *TenantListReq) (*TenantListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTenantTreeList not implemented")
-}
-func (UnimplementedTenantServer) mustEmbedUnimplementedTenantServer() {}
-
-// UnsafeTenantServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TenantServer will
-// result in compilation errors.
-type UnsafeTenantServer interface {
-	mustEmbedUnimplementedTenantServer()
-}
-
-func RegisterTenantServer(s grpc.ServiceRegistrar, srv TenantServer) {
-	s.RegisterService(&Tenant_ServiceDesc, srv)
-}
-
-func _Tenant_CreateOrUpdateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateTenantReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TenantServer).CreateOrUpdateTenant(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Tenant/CreateOrUpdateTenant",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantServer).CreateOrUpdateTenant(ctx, req.(*CreateOrUpdateTenantReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Tenant_DeleteTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UUIDReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TenantServer).DeleteTenant(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Tenant/DeleteTenant",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantServer).DeleteTenant(ctx, req.(*UUIDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Tenant_GetTenantTreeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TenantListReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TenantServer).GetTenantTreeList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Tenant/GetTenantTreeList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantServer).GetTenantTreeList(ctx, req.(*TenantListReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Tenant_ServiceDesc is the grpc.ServiceDesc for Tenant service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var Tenant_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Tenant",
-	HandlerType: (*TenantServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "CreateOrUpdateTenant",
-			Handler:    _Tenant_CreateOrUpdateTenant_Handler,
-		},
-		{
-			MethodName: "DeleteTenant",
-			Handler:    _Tenant_DeleteTenant_Handler,
-		},
-		{
-			MethodName: "GetTenantTreeList",
-			Handler:    _Tenant_GetTenantTreeList_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "usercenter.proto",
-}
-
 // UserClient is the client API for User service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-	ChangePassword(ctx context.Context, in *ChangePasswordReq, opts ...grpc.CallOption) (*BaseResp, error)
-	CreateOrUpdateUser(ctx context.Context, in *CreateOrUpdateUserReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetUserById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*UserInfoResp, error)
-	GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*UserListResp, error)
-	DeleteUser(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	BatchDeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+	CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*BaseResp, error)
+	BatchCreateUsers(ctx context.Context, in *BatchCreateUserReq, opts ...grpc.CallOption) (*IDsResp, error)
+	DeleteUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	BatchDeleteUser(ctx context.Context, in *IDsResp, opts ...grpc.CallOption) (*BaseResp, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileReq, opts ...grpc.CallOption) (*BaseResp, error)
-	UpdateUserStatus(ctx context.Context, in *StatusCodeUUIDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*UserInfoResp, error)
+	GetUserList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*UserListResp, error)
+	UpdateUserStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error)
+	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	ChangePassword(ctx context.Context, in *ChangePasswdReq, opts ...grpc.CallOption) (*BaseResp, error)
 }
 
 type userClient struct {
@@ -285,52 +42,25 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
-	out := new(LoginResp)
-	err := c.cc.Invoke(ctx, "/pb.User/Login", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) ChangePassword(ctx context.Context, in *ChangePasswordReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.User/ChangePassword", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.User/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) CreateOrUpdateUser(ctx context.Context, in *CreateOrUpdateUserReq, opts ...grpc.CallOption) (*BaseResp, error) {
-	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.User/CreateOrUpdateUser", in, out, opts...)
+func (c *userClient) BatchCreateUsers(ctx context.Context, in *BatchCreateUserReq, opts ...grpc.CallOption) (*IDsResp, error) {
+	out := new(IDsResp)
+	err := c.cc.Invoke(ctx, "/pb.User/BatchCreateUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) GetUserById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
-	out := new(UserInfoResp)
-	err := c.cc.Invoke(ctx, "/pb.User/GetUserById", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*UserListResp, error) {
-	out := new(UserListResp)
-	err := c.cc.Invoke(ctx, "/pb.User/GetUserList", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) DeleteUser(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *userClient) DeleteUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, "/pb.User/DeleteUser", in, out, opts...)
 	if err != nil {
@@ -339,7 +69,7 @@ func (c *userClient) DeleteUser(ctx context.Context, in *UUIDReq, opts ...grpc.C
 	return out, nil
 }
 
-func (c *userClient) BatchDeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *userClient) BatchDeleteUser(ctx context.Context, in *IDsResp, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, "/pb.User/BatchDeleteUser", in, out, opts...)
 	if err != nil {
@@ -357,9 +87,45 @@ func (c *userClient) UpdateProfile(ctx context.Context, in *UpdateProfileReq, op
 	return out, nil
 }
 
-func (c *userClient) UpdateUserStatus(ctx context.Context, in *StatusCodeUUIDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *userClient) GetUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
+	out := new(UserInfoResp)
+	err := c.cc.Invoke(ctx, "/pb.User/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) GetUserList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*UserListResp, error) {
+	out := new(UserListResp)
+	err := c.cc.Invoke(ctx, "/pb.User/GetUserList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UpdateUserStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, "/pb.User/UpdateUserStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+	out := new(LoginResp)
+	err := c.cc.Invoke(ctx, "/pb.User/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) ChangePassword(ctx context.Context, in *ChangePasswdReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.User/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -370,15 +136,16 @@ func (c *userClient) UpdateUserStatus(ctx context.Context, in *StatusCodeUUIDReq
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	Login(context.Context, *LoginReq) (*LoginResp, error)
-	ChangePassword(context.Context, *ChangePasswordReq) (*BaseResp, error)
-	CreateOrUpdateUser(context.Context, *CreateOrUpdateUserReq) (*BaseResp, error)
-	GetUserById(context.Context, *UUIDReq) (*UserInfoResp, error)
-	GetUserList(context.Context, *GetUserListReq) (*UserListResp, error)
-	DeleteUser(context.Context, *UUIDReq) (*BaseResp, error)
-	BatchDeleteUser(context.Context, *UUIDsReq) (*BaseResp, error)
+	CreateUser(context.Context, *CreateUserReq) (*BaseResp, error)
+	BatchCreateUsers(context.Context, *BatchCreateUserReq) (*IDsResp, error)
+	DeleteUser(context.Context, *IDReq) (*BaseResp, error)
+	BatchDeleteUser(context.Context, *IDsResp) (*BaseResp, error)
 	UpdateProfile(context.Context, *UpdateProfileReq) (*BaseResp, error)
-	UpdateUserStatus(context.Context, *StatusCodeUUIDReq) (*BaseResp, error)
+	GetUser(context.Context, *IDReq) (*UserInfoResp, error)
+	GetUserList(context.Context, *PageInfoReq) (*UserListResp, error)
+	UpdateUserStatus(context.Context, *StatusCodeReq) (*BaseResp, error)
+	Login(context.Context, *LoginReq) (*LoginResp, error)
+	ChangePassword(context.Context, *ChangePasswdReq) (*BaseResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -386,32 +153,35 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedUserServer) CreateUser(context.Context, *CreateUserReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserServer) ChangePassword(context.Context, *ChangePasswordReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
+func (UnimplementedUserServer) BatchCreateUsers(context.Context, *BatchCreateUserReq) (*IDsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchCreateUsers not implemented")
 }
-func (UnimplementedUserServer) CreateOrUpdateUser(context.Context, *CreateOrUpdateUserReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateUser not implemented")
-}
-func (UnimplementedUserServer) GetUserById(context.Context, *UUIDReq) (*UserInfoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
-}
-func (UnimplementedUserServer) GetUserList(context.Context, *GetUserListReq) (*UserListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
-}
-func (UnimplementedUserServer) DeleteUser(context.Context, *UUIDReq) (*BaseResp, error) {
+func (UnimplementedUserServer) DeleteUser(context.Context, *IDReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedUserServer) BatchDeleteUser(context.Context, *UUIDsReq) (*BaseResp, error) {
+func (UnimplementedUserServer) BatchDeleteUser(context.Context, *IDsResp) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchDeleteUser not implemented")
 }
 func (UnimplementedUserServer) UpdateProfile(context.Context, *UpdateProfileReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
 }
-func (UnimplementedUserServer) UpdateUserStatus(context.Context, *StatusCodeUUIDReq) (*BaseResp, error) {
+func (UnimplementedUserServer) GetUser(context.Context, *IDReq) (*UserInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedUserServer) GetUserList(context.Context, *PageInfoReq) (*UserListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
+}
+func (UnimplementedUserServer) UpdateUserStatus(context.Context, *StatusCodeReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserStatus not implemented")
+}
+func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServer) ChangePassword(context.Context, *ChangePasswdReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -426,98 +196,44 @@ func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 	s.RegisterService(&User_ServiceDesc, srv)
 }
 
-func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginReq)
+func _User_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Login(ctx, in)
+		return srv.(UserServer).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.User/Login",
+		FullMethod: "/pb.User/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Login(ctx, req.(*LoginReq))
+		return srv.(UserServer).CreateUser(ctx, req.(*CreateUserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangePasswordReq)
+func _User_BatchCreateUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateUserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).ChangePassword(ctx, in)
+		return srv.(UserServer).BatchCreateUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.User/ChangePassword",
+		FullMethod: "/pb.User/BatchCreateUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).ChangePassword(ctx, req.(*ChangePasswordReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_CreateOrUpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateUserReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).CreateOrUpdateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.User/CreateOrUpdateUser",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).CreateOrUpdateUser(ctx, req.(*CreateOrUpdateUserReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UUIDReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).GetUserById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.User/GetUserById",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUserById(ctx, req.(*UUIDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserListReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).GetUserList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.User/GetUserList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUserList(ctx, req.(*GetUserListReq))
+		return srv.(UserServer).BatchCreateUsers(ctx, req.(*BatchCreateUserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _User_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UUIDReq)
+	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -529,13 +245,13 @@ func _User_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/pb.User/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).DeleteUser(ctx, req.(*UUIDReq))
+		return srv.(UserServer).DeleteUser(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _User_BatchDeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UUIDsReq)
+	in := new(IDsResp)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -547,7 +263,7 @@ func _User_BatchDeleteUser_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/pb.User/BatchDeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).BatchDeleteUser(ctx, req.(*UUIDsReq))
+		return srv.(UserServer).BatchDeleteUser(ctx, req.(*IDsResp))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -570,8 +286,44 @@ func _User_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.User/GetUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUser(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUserList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.User/GetUserList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUserList(ctx, req.(*PageInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_UpdateUserStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatusCodeUUIDReq)
+	in := new(StatusCodeReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -583,7 +335,43 @@ func _User_UpdateUserStatus_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/pb.User/UpdateUserStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UpdateUserStatus(ctx, req.(*StatusCodeUUIDReq))
+		return srv.(UserServer).UpdateUserStatus(ctx, req.(*StatusCodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.User/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Login(ctx, req.(*LoginReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.User/ChangePassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ChangePassword(ctx, req.(*ChangePasswdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -596,24 +384,12 @@ var User_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
-			Handler:    _User_Login_Handler,
+			MethodName: "CreateUser",
+			Handler:    _User_CreateUser_Handler,
 		},
 		{
-			MethodName: "ChangePassword",
-			Handler:    _User_ChangePassword_Handler,
-		},
-		{
-			MethodName: "CreateOrUpdateUser",
-			Handler:    _User_CreateOrUpdateUser_Handler,
-		},
-		{
-			MethodName: "GetUserById",
-			Handler:    _User_GetUserById_Handler,
-		},
-		{
-			MethodName: "GetUserList",
-			Handler:    _User_GetUserList_Handler,
+			MethodName: "BatchCreateUsers",
+			Handler:    _User_BatchCreateUsers_Handler,
 		},
 		{
 			MethodName: "DeleteUser",
@@ -628,310 +404,470 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UpdateProfile_Handler,
 		},
 		{
+			MethodName: "GetUser",
+			Handler:    _User_GetUser_Handler,
+		},
+		{
+			MethodName: "GetUserList",
+			Handler:    _User_GetUserList_Handler,
+		},
+		{
 			MethodName: "UpdateUserStatus",
 			Handler:    _User_UpdateUserStatus_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _User_Login_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _User_ChangePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "usercenter.proto",
 }
 
-// MenuClient is the client API for Menu service.
+// StationClient is the client API for Station service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MenuClient interface {
-	CreateOrUpdateMenu(ctx context.Context, in *CreateOrUpdateMenuReq, opts ...grpc.CallOption) (*BaseResp, error)
-	DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetMenuListByRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfoList, error)
-	GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error)
-	CreateOrUpdateMenuParam(ctx context.Context, in *CreateOrUpdateMenuParamReq, opts ...grpc.CallOption) (*BaseResp, error)
-	DeleteMenuParam(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetMenuParamListByMenuId(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuParamListResp, error)
+type StationClient interface {
+	CreateStation(ctx context.Context, in *CreateStationReq, opts ...grpc.CallOption) (*BaseResp, error)
+	DeleteStation(ctx context.Context, in *IDResp, opts ...grpc.CallOption) (*BaseResp, error)
+	GetStation(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetStationResp, error)
+	GetStationByUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetStationByUserResp, error)
+	UpdateStation(ctx context.Context, in *UpdateStationReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateStationSort(ctx context.Context, in *ChangePositionReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateDep(ctx context.Context, in *ChangeDept, opts ...grpc.CallOption) (*BaseResp, error)
+	GrantRoleToStation(ctx context.Context, in *GrantRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GrantStationToUser(ctx context.Context, in *StationUserReq, opts ...grpc.CallOption) (*BaseResp, error)
+	ReplaceStationUser(ctx context.Context, in *ReplaceUserReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetStationList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*GetStationListResp, error)
 }
 
-type menuClient struct {
+type stationClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMenuClient(cc grpc.ClientConnInterface) MenuClient {
-	return &menuClient{cc}
+func NewStationClient(cc grpc.ClientConnInterface) StationClient {
+	return &stationClient{cc}
 }
 
-func (c *menuClient) CreateOrUpdateMenu(ctx context.Context, in *CreateOrUpdateMenuReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *stationClient) CreateStation(ctx context.Context, in *CreateStationReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Menu/CreateOrUpdateMenu", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Station/CreateStation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *stationClient) DeleteStation(ctx context.Context, in *IDResp, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Menu/DeleteMenu", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Station/DeleteStation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) GetMenuListByRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
-	out := new(MenuInfoList)
-	err := c.cc.Invoke(ctx, "/pb.Menu/GetMenuListByRole", in, out, opts...)
+func (c *stationClient) GetStation(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetStationResp, error) {
+	out := new(GetStationResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/GetStation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
-	out := new(MenuInfoList)
-	err := c.cc.Invoke(ctx, "/pb.Menu/GetMenuList", in, out, opts...)
+func (c *stationClient) GetStationByUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetStationByUserResp, error) {
+	out := new(GetStationByUserResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/GetStationByUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) CreateOrUpdateMenuParam(ctx context.Context, in *CreateOrUpdateMenuParamReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *stationClient) UpdateStation(ctx context.Context, in *UpdateStationReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Menu/CreateOrUpdateMenuParam", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Station/UpdateStation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) DeleteMenuParam(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *stationClient) UpdateStationSort(ctx context.Context, in *ChangePositionReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Menu/DeleteMenuParam", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Station/UpdateStationSort", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) GetMenuParamListByMenuId(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuParamListResp, error) {
-	out := new(MenuParamListResp)
-	err := c.cc.Invoke(ctx, "/pb.Menu/GetMenuParamListByMenuId", in, out, opts...)
+func (c *stationClient) UpdateDep(ctx context.Context, in *ChangeDept, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/UpdateDep", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MenuServer is the server API for Menu service.
-// All implementations must embed UnimplementedMenuServer
+func (c *stationClient) GrantRoleToStation(ctx context.Context, in *GrantRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/GrantRoleToStation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stationClient) GrantStationToUser(ctx context.Context, in *StationUserReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/GrantStationToUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stationClient) ReplaceStationUser(ctx context.Context, in *ReplaceUserReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/ReplaceStationUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stationClient) GetStationList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*GetStationListResp, error) {
+	out := new(GetStationListResp)
+	err := c.cc.Invoke(ctx, "/pb.Station/GetStationList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StationServer is the server API for Station service.
+// All implementations must embed UnimplementedStationServer
 // for forward compatibility
-type MenuServer interface {
-	CreateOrUpdateMenu(context.Context, *CreateOrUpdateMenuReq) (*BaseResp, error)
-	DeleteMenu(context.Context, *IDReq) (*BaseResp, error)
-	GetMenuListByRole(context.Context, *IDReq) (*MenuInfoList, error)
-	GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error)
-	CreateOrUpdateMenuParam(context.Context, *CreateOrUpdateMenuParamReq) (*BaseResp, error)
-	DeleteMenuParam(context.Context, *IDReq) (*BaseResp, error)
-	GetMenuParamListByMenuId(context.Context, *IDReq) (*MenuParamListResp, error)
-	mustEmbedUnimplementedMenuServer()
+type StationServer interface {
+	CreateStation(context.Context, *CreateStationReq) (*BaseResp, error)
+	DeleteStation(context.Context, *IDResp) (*BaseResp, error)
+	GetStation(context.Context, *IDReq) (*GetStationResp, error)
+	GetStationByUser(context.Context, *IDReq) (*GetStationByUserResp, error)
+	UpdateStation(context.Context, *UpdateStationReq) (*BaseResp, error)
+	UpdateStationSort(context.Context, *ChangePositionReq) (*BaseResp, error)
+	UpdateDep(context.Context, *ChangeDept) (*BaseResp, error)
+	GrantRoleToStation(context.Context, *GrantRoleReq) (*BaseResp, error)
+	GrantStationToUser(context.Context, *StationUserReq) (*BaseResp, error)
+	ReplaceStationUser(context.Context, *ReplaceUserReq) (*BaseResp, error)
+	GetStationList(context.Context, *PageInfoReq) (*GetStationListResp, error)
+	mustEmbedUnimplementedStationServer()
 }
 
-// UnimplementedMenuServer must be embedded to have forward compatible implementations.
-type UnimplementedMenuServer struct {
+// UnimplementedStationServer must be embedded to have forward compatible implementations.
+type UnimplementedStationServer struct {
 }
 
-func (UnimplementedMenuServer) CreateOrUpdateMenu(context.Context, *CreateOrUpdateMenuReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateMenu not implemented")
+func (UnimplementedStationServer) CreateStation(context.Context, *CreateStationReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
 }
-func (UnimplementedMenuServer) DeleteMenu(context.Context, *IDReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMenu not implemented")
+func (UnimplementedStationServer) DeleteStation(context.Context, *IDResp) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteStation not implemented")
 }
-func (UnimplementedMenuServer) GetMenuListByRole(context.Context, *IDReq) (*MenuInfoList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuListByRole not implemented")
+func (UnimplementedStationServer) GetStation(context.Context, *IDReq) (*GetStationResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStation not implemented")
 }
-func (UnimplementedMenuServer) GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
+func (UnimplementedStationServer) GetStationByUser(context.Context, *IDReq) (*GetStationByUserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStationByUser not implemented")
 }
-func (UnimplementedMenuServer) CreateOrUpdateMenuParam(context.Context, *CreateOrUpdateMenuParamReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateMenuParam not implemented")
+func (UnimplementedStationServer) UpdateStation(context.Context, *UpdateStationReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateStation not implemented")
 }
-func (UnimplementedMenuServer) DeleteMenuParam(context.Context, *IDReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMenuParam not implemented")
+func (UnimplementedStationServer) UpdateStationSort(context.Context, *ChangePositionReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateStationSort not implemented")
 }
-func (UnimplementedMenuServer) GetMenuParamListByMenuId(context.Context, *IDReq) (*MenuParamListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuParamListByMenuId not implemented")
+func (UnimplementedStationServer) UpdateDep(context.Context, *ChangeDept) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDep not implemented")
 }
-func (UnimplementedMenuServer) mustEmbedUnimplementedMenuServer() {}
+func (UnimplementedStationServer) GrantRoleToStation(context.Context, *GrantRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantRoleToStation not implemented")
+}
+func (UnimplementedStationServer) GrantStationToUser(context.Context, *StationUserReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantStationToUser not implemented")
+}
+func (UnimplementedStationServer) ReplaceStationUser(context.Context, *ReplaceUserReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReplaceStationUser not implemented")
+}
+func (UnimplementedStationServer) GetStationList(context.Context, *PageInfoReq) (*GetStationListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStationList not implemented")
+}
+func (UnimplementedStationServer) mustEmbedUnimplementedStationServer() {}
 
-// UnsafeMenuServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MenuServer will
+// UnsafeStationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StationServer will
 // result in compilation errors.
-type UnsafeMenuServer interface {
-	mustEmbedUnimplementedMenuServer()
+type UnsafeStationServer interface {
+	mustEmbedUnimplementedStationServer()
 }
 
-func RegisterMenuServer(s grpc.ServiceRegistrar, srv MenuServer) {
-	s.RegisterService(&Menu_ServiceDesc, srv)
+func RegisterStationServer(s grpc.ServiceRegistrar, srv StationServer) {
+	s.RegisterService(&Station_ServiceDesc, srv)
 }
 
-func _Menu_CreateOrUpdateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateMenuReq)
+func _Station_CreateStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStationReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).CreateOrUpdateMenu(ctx, in)
+		return srv.(StationServer).CreateStation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Menu/CreateOrUpdateMenu",
+		FullMethod: "/pb.Station/CreateStation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).CreateOrUpdateMenu(ctx, req.(*CreateOrUpdateMenuReq))
+		return srv.(StationServer).CreateStation(ctx, req.(*CreateStationReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_DeleteMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Station_DeleteStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDResp)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).DeleteStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/DeleteStation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).DeleteStation(ctx, req.(*IDResp))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_GetStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).DeleteMenu(ctx, in)
+		return srv.(StationServer).GetStation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Menu/DeleteMenu",
+		FullMethod: "/pb.Station/GetStation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).DeleteMenu(ctx, req.(*IDReq))
+		return srv.(StationServer).GetStation(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_GetMenuListByRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Station_GetStationByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).GetMenuListByRole(ctx, in)
+		return srv.(StationServer).GetStationByUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Menu/GetMenuListByRole",
+		FullMethod: "/pb.Station/GetStationByUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).GetMenuListByRole(ctx, req.(*IDReq))
+		return srv.(StationServer).GetStationByUser(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Station_UpdateStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateStationReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).UpdateStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/UpdateStation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).UpdateStation(ctx, req.(*UpdateStationReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_UpdateStationSort_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePositionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).UpdateStationSort(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/UpdateStationSort",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).UpdateStationSort(ctx, req.(*ChangePositionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_UpdateDep_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeDept)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).UpdateDep(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/UpdateDep",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).UpdateDep(ctx, req.(*ChangeDept))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_GrantRoleToStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).GrantRoleToStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/GrantRoleToStation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).GrantRoleToStation(ctx, req.(*GrantRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_GrantStationToUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StationUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).GrantStationToUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/GrantStationToUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).GrantStationToUser(ctx, req.(*StationUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_ReplaceStationUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReplaceUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StationServer).ReplaceStationUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Station/ReplaceStationUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StationServer).ReplaceStationUser(ctx, req.(*ReplaceUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Station_GetStationList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PageInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).GetMenuList(ctx, in)
+		return srv.(StationServer).GetStationList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Menu/GetMenuList",
+		FullMethod: "/pb.Station/GetStationList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).GetMenuList(ctx, req.(*PageInfoReq))
+		return srv.(StationServer).GetStationList(ctx, req.(*PageInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_CreateOrUpdateMenuParam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateMenuParamReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MenuServer).CreateOrUpdateMenuParam(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Menu/CreateOrUpdateMenuParam",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).CreateOrUpdateMenuParam(ctx, req.(*CreateOrUpdateMenuParamReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Menu_DeleteMenuParam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MenuServer).DeleteMenuParam(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Menu/DeleteMenuParam",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).DeleteMenuParam(ctx, req.(*IDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Menu_GetMenuParamListByMenuId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MenuServer).GetMenuParamListByMenuId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Menu/GetMenuParamListByMenuId",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).GetMenuParamListByMenuId(ctx, req.(*IDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Menu_ServiceDesc is the grpc.ServiceDesc for Menu service.
+// Station_ServiceDesc is the grpc.ServiceDesc for Station service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Menu_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Menu",
-	HandlerType: (*MenuServer)(nil),
+var Station_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.Station",
+	HandlerType: (*StationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateOrUpdateMenu",
-			Handler:    _Menu_CreateOrUpdateMenu_Handler,
+			MethodName: "CreateStation",
+			Handler:    _Station_CreateStation_Handler,
 		},
 		{
-			MethodName: "DeleteMenu",
-			Handler:    _Menu_DeleteMenu_Handler,
+			MethodName: "DeleteStation",
+			Handler:    _Station_DeleteStation_Handler,
 		},
 		{
-			MethodName: "GetMenuListByRole",
-			Handler:    _Menu_GetMenuListByRole_Handler,
+			MethodName: "GetStation",
+			Handler:    _Station_GetStation_Handler,
 		},
 		{
-			MethodName: "GetMenuList",
-			Handler:    _Menu_GetMenuList_Handler,
+			MethodName: "GetStationByUser",
+			Handler:    _Station_GetStationByUser_Handler,
 		},
 		{
-			MethodName: "CreateOrUpdateMenuParam",
-			Handler:    _Menu_CreateOrUpdateMenuParam_Handler,
+			MethodName: "UpdateStation",
+			Handler:    _Station_UpdateStation_Handler,
 		},
 		{
-			MethodName: "DeleteMenuParam",
-			Handler:    _Menu_DeleteMenuParam_Handler,
+			MethodName: "UpdateStationSort",
+			Handler:    _Station_UpdateStationSort_Handler,
 		},
 		{
-			MethodName: "GetMenuParamListByMenuId",
-			Handler:    _Menu_GetMenuParamListByMenuId_Handler,
+			MethodName: "UpdateDep",
+			Handler:    _Station_UpdateDep_Handler,
+		},
+		{
+			MethodName: "GrantRoleToStation",
+			Handler:    _Station_GrantRoleToStation_Handler,
+		},
+		{
+			MethodName: "GrantStationToUser",
+			Handler:    _Station_GrantStationToUser_Handler,
+		},
+		{
+			MethodName: "ReplaceStationUser",
+			Handler:    _Station_ReplaceStationUser_Handler,
+		},
+		{
+			MethodName: "GetStationList",
+			Handler:    _Station_GetStationList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -942,11 +878,14 @@ var Menu_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RoleClient interface {
-	CreateOrUpdateRole(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	CreateRole(ctx context.Context, in *CreateRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
 	DeleteRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetRoleById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleInfo, error)
+	UpdateRole(ctx context.Context, in *UpdateRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetRoleResp, error)
+	GrantMenuToRole(ctx context.Context, in *GrantMenuToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GrantApiToRole(ctx context.Context, in *GrantApiToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GrantRoleToStation(ctx context.Context, in *GrantRoleToStationReq, opts ...grpc.CallOption) (*BaseResp, error)
 	GetRoleList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*RoleListResp, error)
-	UpdateRoleStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error)
 }
 
 type roleClient struct {
@@ -957,9 +896,9 @@ func NewRoleClient(cc grpc.ClientConnInterface) RoleClient {
 	return &roleClient{cc}
 }
 
-func (c *roleClient) CreateOrUpdateRole(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *roleClient) CreateRole(ctx context.Context, in *CreateRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Role/CreateOrUpdateRole", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Role/CreateRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -975,9 +914,45 @@ func (c *roleClient) DeleteRole(ctx context.Context, in *IDReq, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *roleClient) GetRoleById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleInfo, error) {
-	out := new(RoleInfo)
-	err := c.cc.Invoke(ctx, "/pb.Role/GetRoleById", in, out, opts...)
+func (c *roleClient) UpdateRole(ctx context.Context, in *UpdateRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Role/UpdateRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) GetRole(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetRoleResp, error) {
+	out := new(GetRoleResp)
+	err := c.cc.Invoke(ctx, "/pb.Role/GetRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) GrantMenuToRole(ctx context.Context, in *GrantMenuToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Role/GrantMenuToRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) GrantApiToRole(ctx context.Context, in *GrantApiToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Role/GrantApiToRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) GrantRoleToStation(ctx context.Context, in *GrantRoleToStationReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Role/GrantRoleToStation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -993,24 +968,18 @@ func (c *roleClient) GetRoleList(ctx context.Context, in *PageInfoReq, opts ...g
 	return out, nil
 }
 
-func (c *roleClient) UpdateRoleStatus(ctx context.Context, in *StatusCodeReq, opts ...grpc.CallOption) (*BaseResp, error) {
-	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Role/UpdateRoleStatus", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RoleServer is the server API for Role service.
 // All implementations must embed UnimplementedRoleServer
 // for forward compatibility
 type RoleServer interface {
-	CreateOrUpdateRole(context.Context, *RoleInfo) (*BaseResp, error)
+	CreateRole(context.Context, *CreateRoleReq) (*BaseResp, error)
 	DeleteRole(context.Context, *IDReq) (*BaseResp, error)
-	GetRoleById(context.Context, *IDReq) (*RoleInfo, error)
+	UpdateRole(context.Context, *UpdateRoleReq) (*BaseResp, error)
+	GetRole(context.Context, *IDReq) (*GetRoleResp, error)
+	GrantMenuToRole(context.Context, *GrantMenuToRoleReq) (*BaseResp, error)
+	GrantApiToRole(context.Context, *GrantApiToRoleReq) (*BaseResp, error)
+	GrantRoleToStation(context.Context, *GrantRoleToStationReq) (*BaseResp, error)
 	GetRoleList(context.Context, *PageInfoReq) (*RoleListResp, error)
-	UpdateRoleStatus(context.Context, *StatusCodeReq) (*BaseResp, error)
 	mustEmbedUnimplementedRoleServer()
 }
 
@@ -1018,20 +987,29 @@ type RoleServer interface {
 type UnimplementedRoleServer struct {
 }
 
-func (UnimplementedRoleServer) CreateOrUpdateRole(context.Context, *RoleInfo) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateRole not implemented")
+func (UnimplementedRoleServer) CreateRole(context.Context, *CreateRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRole not implemented")
 }
 func (UnimplementedRoleServer) DeleteRole(context.Context, *IDReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRole not implemented")
 }
-func (UnimplementedRoleServer) GetRoleById(context.Context, *IDReq) (*RoleInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRoleById not implemented")
+func (UnimplementedRoleServer) UpdateRole(context.Context, *UpdateRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRole not implemented")
+}
+func (UnimplementedRoleServer) GetRole(context.Context, *IDReq) (*GetRoleResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRole not implemented")
+}
+func (UnimplementedRoleServer) GrantMenuToRole(context.Context, *GrantMenuToRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantMenuToRole not implemented")
+}
+func (UnimplementedRoleServer) GrantApiToRole(context.Context, *GrantApiToRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantApiToRole not implemented")
+}
+func (UnimplementedRoleServer) GrantRoleToStation(context.Context, *GrantRoleToStationReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantRoleToStation not implemented")
 }
 func (UnimplementedRoleServer) GetRoleList(context.Context, *PageInfoReq) (*RoleListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRoleList not implemented")
-}
-func (UnimplementedRoleServer) UpdateRoleStatus(context.Context, *StatusCodeReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateRoleStatus not implemented")
 }
 func (UnimplementedRoleServer) mustEmbedUnimplementedRoleServer() {}
 
@@ -1046,20 +1024,20 @@ func RegisterRoleServer(s grpc.ServiceRegistrar, srv RoleServer) {
 	s.RegisterService(&Role_ServiceDesc, srv)
 }
 
-func _Role_CreateOrUpdateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleInfo)
+func _Role_CreateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRoleReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).CreateOrUpdateRole(ctx, in)
+		return srv.(RoleServer).CreateRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Role/CreateOrUpdateRole",
+		FullMethod: "/pb.Role/CreateRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).CreateOrUpdateRole(ctx, req.(*RoleInfo))
+		return srv.(RoleServer).CreateRole(ctx, req.(*CreateRoleReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1082,20 +1060,92 @@ func _Role_DeleteRole_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_GetRoleById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Role_UpdateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).UpdateRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Role/UpdateRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).UpdateRole(ctx, req.(*UpdateRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_GetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).GetRoleById(ctx, in)
+		return srv.(RoleServer).GetRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Role/GetRoleById",
+		FullMethod: "/pb.Role/GetRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).GetRoleById(ctx, req.(*IDReq))
+		return srv.(RoleServer).GetRole(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_GrantMenuToRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantMenuToRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).GrantMenuToRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Role/GrantMenuToRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).GrantMenuToRole(ctx, req.(*GrantMenuToRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_GrantApiToRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantApiToRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).GrantApiToRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Role/GrantApiToRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).GrantApiToRole(ctx, req.(*GrantApiToRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_GrantRoleToStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantRoleToStationReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).GrantRoleToStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Role/GrantRoleToStation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).GrantRoleToStation(ctx, req.(*GrantRoleToStationReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1118,24 +1168,6 @@ func _Role_GetRoleList_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_UpdateRoleStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatusCodeReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RoleServer).UpdateRoleStatus(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Role/UpdateRoleStatus",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).UpdateRoleStatus(ctx, req.(*StatusCodeReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Role_ServiceDesc is the grpc.ServiceDesc for Role service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1144,24 +1176,712 @@ var Role_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RoleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateOrUpdateRole",
-			Handler:    _Role_CreateOrUpdateRole_Handler,
+			MethodName: "CreateRole",
+			Handler:    _Role_CreateRole_Handler,
 		},
 		{
 			MethodName: "DeleteRole",
 			Handler:    _Role_DeleteRole_Handler,
 		},
 		{
-			MethodName: "GetRoleById",
-			Handler:    _Role_GetRoleById_Handler,
+			MethodName: "UpdateRole",
+			Handler:    _Role_UpdateRole_Handler,
+		},
+		{
+			MethodName: "GetRole",
+			Handler:    _Role_GetRole_Handler,
+		},
+		{
+			MethodName: "GrantMenuToRole",
+			Handler:    _Role_GrantMenuToRole_Handler,
+		},
+		{
+			MethodName: "GrantApiToRole",
+			Handler:    _Role_GrantApiToRole_Handler,
+		},
+		{
+			MethodName: "GrantRoleToStation",
+			Handler:    _Role_GrantRoleToStation_Handler,
 		},
 		{
 			MethodName: "GetRoleList",
 			Handler:    _Role_GetRoleList_Handler,
 		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "usercenter.proto",
+}
+
+// MenuClient is the client API for Menu service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MenuClient interface {
+	CreateMenu(ctx context.Context, in *CreateMenuReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateMenu(ctx context.Context, in *UpdateMenuReq, opts ...grpc.CallOption) (*BaseResp, error)
+	DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	CreateMenuParam(ctx context.Context, in *CreateMenuParamReq, opts ...grpc.CallOption) (*BaseResp, error)
+	DeleteParams(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetMenuList(ctx context.Context, in *GetMenuListReq, opts ...grpc.CallOption) (*GetMenuListResp, error)
+	GetParamsByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetParamsByMenuResp, error)
+	UpdateMenuParams(ctx context.Context, in *UpdateMenuParamsReq, opts ...grpc.CallOption) (*BaseResp, error)
+}
+
+type menuClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMenuClient(cc grpc.ClientConnInterface) MenuClient {
+	return &menuClient{cc}
+}
+
+func (c *menuClient) CreateMenu(ctx context.Context, in *CreateMenuReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/CreateMenu", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) UpdateMenu(ctx context.Context, in *UpdateMenuReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/UpdateMenu", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/DeleteMenu", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) CreateMenuParam(ctx context.Context, in *CreateMenuParamReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/CreateMenuParam", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) DeleteParams(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/DeleteParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) GetMenuList(ctx context.Context, in *GetMenuListReq, opts ...grpc.CallOption) (*GetMenuListResp, error) {
+	out := new(GetMenuListResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/GetMenuList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) GetParamsByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetParamsByMenuResp, error) {
+	out := new(GetParamsByMenuResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/GetParamsByMenu", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) UpdateMenuParams(ctx context.Context, in *UpdateMenuParamsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Menu/UpdateMenuParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MenuServer is the server API for Menu service.
+// All implementations must embed UnimplementedMenuServer
+// for forward compatibility
+type MenuServer interface {
+	CreateMenu(context.Context, *CreateMenuReq) (*BaseResp, error)
+	UpdateMenu(context.Context, *UpdateMenuReq) (*BaseResp, error)
+	DeleteMenu(context.Context, *IDReq) (*BaseResp, error)
+	CreateMenuParam(context.Context, *CreateMenuParamReq) (*BaseResp, error)
+	DeleteParams(context.Context, *IDReq) (*BaseResp, error)
+	GetMenuList(context.Context, *GetMenuListReq) (*GetMenuListResp, error)
+	GetParamsByMenu(context.Context, *IDReq) (*GetParamsByMenuResp, error)
+	UpdateMenuParams(context.Context, *UpdateMenuParamsReq) (*BaseResp, error)
+	mustEmbedUnimplementedMenuServer()
+}
+
+// UnimplementedMenuServer must be embedded to have forward compatible implementations.
+type UnimplementedMenuServer struct {
+}
+
+func (UnimplementedMenuServer) CreateMenu(context.Context, *CreateMenuReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMenu not implemented")
+}
+func (UnimplementedMenuServer) UpdateMenu(context.Context, *UpdateMenuReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMenu not implemented")
+}
+func (UnimplementedMenuServer) DeleteMenu(context.Context, *IDReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMenu not implemented")
+}
+func (UnimplementedMenuServer) CreateMenuParam(context.Context, *CreateMenuParamReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMenuParam not implemented")
+}
+func (UnimplementedMenuServer) DeleteParams(context.Context, *IDReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteParams not implemented")
+}
+func (UnimplementedMenuServer) GetMenuList(context.Context, *GetMenuListReq) (*GetMenuListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
+}
+func (UnimplementedMenuServer) GetParamsByMenu(context.Context, *IDReq) (*GetParamsByMenuResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetParamsByMenu not implemented")
+}
+func (UnimplementedMenuServer) UpdateMenuParams(context.Context, *UpdateMenuParamsReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMenuParams not implemented")
+}
+func (UnimplementedMenuServer) mustEmbedUnimplementedMenuServer() {}
+
+// UnsafeMenuServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MenuServer will
+// result in compilation errors.
+type UnsafeMenuServer interface {
+	mustEmbedUnimplementedMenuServer()
+}
+
+func RegisterMenuServer(s grpc.ServiceRegistrar, srv MenuServer) {
+	s.RegisterService(&Menu_ServiceDesc, srv)
+}
+
+func _Menu_CreateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMenuReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).CreateMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/CreateMenu",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).CreateMenu(ctx, req.(*CreateMenuReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_UpdateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMenuReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).UpdateMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/UpdateMenu",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).UpdateMenu(ctx, req.(*UpdateMenuReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_DeleteMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).DeleteMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/DeleteMenu",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).DeleteMenu(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_CreateMenuParam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMenuParamReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).CreateMenuParam(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/CreateMenuParam",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).CreateMenuParam(ctx, req.(*CreateMenuParamReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_DeleteParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).DeleteParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/DeleteParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).DeleteParams(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMenuListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).GetMenuList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/GetMenuList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).GetMenuList(ctx, req.(*GetMenuListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_GetParamsByMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).GetParamsByMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/GetParamsByMenu",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).GetParamsByMenu(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_UpdateMenuParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMenuParamsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).UpdateMenuParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Menu/UpdateMenuParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).UpdateMenuParams(ctx, req.(*UpdateMenuParamsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Menu_ServiceDesc is the grpc.ServiceDesc for Menu service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Menu_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.Menu",
+	HandlerType: (*MenuServer)(nil),
+	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateRoleStatus",
-			Handler:    _Role_UpdateRoleStatus_Handler,
+			MethodName: "CreateMenu",
+			Handler:    _Menu_CreateMenu_Handler,
+		},
+		{
+			MethodName: "UpdateMenu",
+			Handler:    _Menu_UpdateMenu_Handler,
+		},
+		{
+			MethodName: "DeleteMenu",
+			Handler:    _Menu_DeleteMenu_Handler,
+		},
+		{
+			MethodName: "CreateMenuParam",
+			Handler:    _Menu_CreateMenuParam_Handler,
+		},
+		{
+			MethodName: "DeleteParams",
+			Handler:    _Menu_DeleteParams_Handler,
+		},
+		{
+			MethodName: "GetMenuList",
+			Handler:    _Menu_GetMenuList_Handler,
+		},
+		{
+			MethodName: "GetParamsByMenu",
+			Handler:    _Menu_GetParamsByMenu_Handler,
+		},
+		{
+			MethodName: "UpdateMenuParams",
+			Handler:    _Menu_UpdateMenuParams_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "usercenter.proto",
+}
+
+// TenantClient is the client API for Tenant service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type TenantClient interface {
+	CreateTenant(ctx context.Context, in *CreateTenantReq, opts ...grpc.CallOption) (*BaseResp, error)
+	DeleteTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateTenant(ctx context.Context, in *UpdateTenantReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTenantResp, error)
+	GrantMenuToRole(ctx context.Context, in *GrantMenusToRoleReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateTenantPeriod(ctx context.Context, in *UpdatePeriodReq, opts ...grpc.CallOption) (*BaseResp, error)
+	UpdateTenantStatus(ctx context.Context, in *UpdateStatusReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetTenantList(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTeantListResp, error)
+}
+
+type tenantClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTenantClient(cc grpc.ClientConnInterface) TenantClient {
+	return &tenantClient{cc}
+}
+
+func (c *tenantClient) CreateTenant(ctx context.Context, in *CreateTenantReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/CreateTenant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) DeleteTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/DeleteTenant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) UpdateTenant(ctx context.Context, in *UpdateTenantReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/UpdateTenant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) GetTenant(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTenantResp, error) {
+	out := new(GetTenantResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/GetTenant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) GrantMenuToRole(ctx context.Context, in *GrantMenusToRoleReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/GrantMenuToRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) UpdateTenantPeriod(ctx context.Context, in *UpdatePeriodReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/UpdateTenantPeriod", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) UpdateTenantStatus(ctx context.Context, in *UpdateStatusReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/UpdateTenantStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantClient) GetTenantList(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTeantListResp, error) {
+	out := new(GetTeantListResp)
+	err := c.cc.Invoke(ctx, "/pb.Tenant/GetTenantList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TenantServer is the server API for Tenant service.
+// All implementations must embed UnimplementedTenantServer
+// for forward compatibility
+type TenantServer interface {
+	CreateTenant(context.Context, *CreateTenantReq) (*BaseResp, error)
+	DeleteTenant(context.Context, *IDReq) (*BaseResp, error)
+	UpdateTenant(context.Context, *UpdateTenantReq) (*BaseResp, error)
+	GetTenant(context.Context, *IDReq) (*GetTenantResp, error)
+	GrantMenuToRole(context.Context, *GrantMenusToRoleReq) (*BaseResp, error)
+	UpdateTenantPeriod(context.Context, *UpdatePeriodReq) (*BaseResp, error)
+	UpdateTenantStatus(context.Context, *UpdateStatusReq) (*BaseResp, error)
+	GetTenantList(context.Context, *IDReq) (*GetTeantListResp, error)
+	mustEmbedUnimplementedTenantServer()
+}
+
+// UnimplementedTenantServer must be embedded to have forward compatible implementations.
+type UnimplementedTenantServer struct {
+}
+
+func (UnimplementedTenantServer) CreateTenant(context.Context, *CreateTenantReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTenant not implemented")
+}
+func (UnimplementedTenantServer) DeleteTenant(context.Context, *IDReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTenant not implemented")
+}
+func (UnimplementedTenantServer) UpdateTenant(context.Context, *UpdateTenantReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTenant not implemented")
+}
+func (UnimplementedTenantServer) GetTenant(context.Context, *IDReq) (*GetTenantResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTenant not implemented")
+}
+func (UnimplementedTenantServer) GrantMenuToRole(context.Context, *GrantMenusToRoleReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantMenuToRole not implemented")
+}
+func (UnimplementedTenantServer) UpdateTenantPeriod(context.Context, *UpdatePeriodReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTenantPeriod not implemented")
+}
+func (UnimplementedTenantServer) UpdateTenantStatus(context.Context, *UpdateStatusReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTenantStatus not implemented")
+}
+func (UnimplementedTenantServer) GetTenantList(context.Context, *IDReq) (*GetTeantListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTenantList not implemented")
+}
+func (UnimplementedTenantServer) mustEmbedUnimplementedTenantServer() {}
+
+// UnsafeTenantServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TenantServer will
+// result in compilation errors.
+type UnsafeTenantServer interface {
+	mustEmbedUnimplementedTenantServer()
+}
+
+func RegisterTenantServer(s grpc.ServiceRegistrar, srv TenantServer) {
+	s.RegisterService(&Tenant_ServiceDesc, srv)
+}
+
+func _Tenant_CreateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTenantReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).CreateTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/CreateTenant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).CreateTenant(ctx, req.(*CreateTenantReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_DeleteTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).DeleteTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/DeleteTenant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).DeleteTenant(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_UpdateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTenantReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).UpdateTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/UpdateTenant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).UpdateTenant(ctx, req.(*UpdateTenantReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_GetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).GetTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/GetTenant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).GetTenant(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_GrantMenuToRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantMenusToRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).GrantMenuToRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/GrantMenuToRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).GrantMenuToRole(ctx, req.(*GrantMenusToRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_UpdateTenantPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePeriodReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).UpdateTenantPeriod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/UpdateTenantPeriod",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).UpdateTenantPeriod(ctx, req.(*UpdatePeriodReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_UpdateTenantStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).UpdateTenantStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/UpdateTenantStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).UpdateTenantStatus(ctx, req.(*UpdateStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenant_GetTenantList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServer).GetTenantList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Tenant/GetTenantList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServer).GetTenantList(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Tenant_ServiceDesc is the grpc.ServiceDesc for Tenant service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Tenant_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.Tenant",
+	HandlerType: (*TenantServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateTenant",
+			Handler:    _Tenant_CreateTenant_Handler,
+		},
+		{
+			MethodName: "DeleteTenant",
+			Handler:    _Tenant_DeleteTenant_Handler,
+		},
+		{
+			MethodName: "UpdateTenant",
+			Handler:    _Tenant_UpdateTenant_Handler,
+		},
+		{
+			MethodName: "GetTenant",
+			Handler:    _Tenant_GetTenant_Handler,
+		},
+		{
+			MethodName: "GrantMenuToRole",
+			Handler:    _Tenant_GrantMenuToRole_Handler,
+		},
+		{
+			MethodName: "UpdateTenantPeriod",
+			Handler:    _Tenant_UpdateTenantPeriod_Handler,
+		},
+		{
+			MethodName: "UpdateTenantStatus",
+			Handler:    _Tenant_UpdateTenantStatus_Handler,
+		},
+		{
+			MethodName: "GetTenantList",
+			Handler:    _Tenant_GetTenantList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1172,9 +1892,11 @@ var Role_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiClient interface {
-	CreateOrUpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	CreateApi(ctx context.Context, in *CreateApiReq, opts ...grpc.CallOption) (*BaseResp, error)
 	DeleteApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-	GetApiList(ctx context.Context, in *ApiPageReq, opts ...grpc.CallOption) (*ApiListResp, error)
+	UpdateApi(ctx context.Context, in *UpdateApiReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiResp, error)
+	GetApiListByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiListResp, error)
 }
 
 type apiClient struct {
@@ -1185,9 +1907,9 @@ func NewApiClient(cc grpc.ClientConnInterface) ApiClient {
 	return &apiClient{cc}
 }
 
-func (c *apiClient) CreateOrUpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *apiClient) CreateApi(ctx context.Context, in *CreateApiReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Api/CreateOrUpdateApi", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Api/CreateApi", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1203,9 +1925,27 @@ func (c *apiClient) DeleteApi(ctx context.Context, in *IDReq, opts ...grpc.CallO
 	return out, nil
 }
 
-func (c *apiClient) GetApiList(ctx context.Context, in *ApiPageReq, opts ...grpc.CallOption) (*ApiListResp, error) {
-	out := new(ApiListResp)
-	err := c.cc.Invoke(ctx, "/pb.Api/GetApiList", in, out, opts...)
+func (c *apiClient) UpdateApi(ctx context.Context, in *UpdateApiReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Api/UpdateApi", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiClient) GetApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiResp, error) {
+	out := new(GetApiResp)
+	err := c.cc.Invoke(ctx, "/pb.Api/GetApi", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiClient) GetApiListByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiListResp, error) {
+	out := new(GetApiListResp)
+	err := c.cc.Invoke(ctx, "/pb.Api/GetApiListByMenu", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1216,9 +1956,11 @@ func (c *apiClient) GetApiList(ctx context.Context, in *ApiPageReq, opts ...grpc
 // All implementations must embed UnimplementedApiServer
 // for forward compatibility
 type ApiServer interface {
-	CreateOrUpdateApi(context.Context, *ApiInfo) (*BaseResp, error)
+	CreateApi(context.Context, *CreateApiReq) (*BaseResp, error)
 	DeleteApi(context.Context, *IDReq) (*BaseResp, error)
-	GetApiList(context.Context, *ApiPageReq) (*ApiListResp, error)
+	UpdateApi(context.Context, *UpdateApiReq) (*BaseResp, error)
+	GetApi(context.Context, *IDReq) (*GetApiResp, error)
+	GetApiListByMenu(context.Context, *IDReq) (*GetApiListResp, error)
 	mustEmbedUnimplementedApiServer()
 }
 
@@ -1226,14 +1968,20 @@ type ApiServer interface {
 type UnimplementedApiServer struct {
 }
 
-func (UnimplementedApiServer) CreateOrUpdateApi(context.Context, *ApiInfo) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateApi not implemented")
+func (UnimplementedApiServer) CreateApi(context.Context, *CreateApiReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApi not implemented")
 }
 func (UnimplementedApiServer) DeleteApi(context.Context, *IDReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteApi not implemented")
 }
-func (UnimplementedApiServer) GetApiList(context.Context, *ApiPageReq) (*ApiListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetApiList not implemented")
+func (UnimplementedApiServer) UpdateApi(context.Context, *UpdateApiReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApi not implemented")
+}
+func (UnimplementedApiServer) GetApi(context.Context, *IDReq) (*GetApiResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApi not implemented")
+}
+func (UnimplementedApiServer) GetApiListByMenu(context.Context, *IDReq) (*GetApiListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApiListByMenu not implemented")
 }
 func (UnimplementedApiServer) mustEmbedUnimplementedApiServer() {}
 
@@ -1248,20 +1996,20 @@ func RegisterApiServer(s grpc.ServiceRegistrar, srv ApiServer) {
 	s.RegisterService(&Api_ServiceDesc, srv)
 }
 
-func _Api_CreateOrUpdateApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiInfo)
+func _Api_CreateApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateApiReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).CreateOrUpdateApi(ctx, in)
+		return srv.(ApiServer).CreateApi(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Api/CreateOrUpdateApi",
+		FullMethod: "/pb.Api/CreateApi",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).CreateOrUpdateApi(ctx, req.(*ApiInfo))
+		return srv.(ApiServer).CreateApi(ctx, req.(*CreateApiReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1284,20 +2032,56 @@ func _Api_DeleteApi_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Api_GetApiList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiPageReq)
+func _Api_UpdateApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateApiReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).GetApiList(ctx, in)
+		return srv.(ApiServer).UpdateApi(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Api/GetApiList",
+		FullMethod: "/pb.Api/UpdateApi",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).GetApiList(ctx, req.(*ApiPageReq))
+		return srv.(ApiServer).UpdateApi(ctx, req.(*UpdateApiReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Api_GetApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiServer).GetApi(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Api/GetApi",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiServer).GetApi(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Api_GetApiListByMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiServer).GetApiListByMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Api/GetApiListByMenu",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiServer).GetApiListByMenu(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1310,138 +2094,254 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ApiServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateOrUpdateApi",
-			Handler:    _Api_CreateOrUpdateApi_Handler,
+			MethodName: "CreateApi",
+			Handler:    _Api_CreateApi_Handler,
 		},
 		{
 			MethodName: "DeleteApi",
 			Handler:    _Api_DeleteApi_Handler,
 		},
 		{
-			MethodName: "GetApiList",
-			Handler:    _Api_GetApiList_Handler,
+			MethodName: "UpdateApi",
+			Handler:    _Api_UpdateApi_Handler,
+		},
+		{
+			MethodName: "GetApi",
+			Handler:    _Api_GetApi_Handler,
+		},
+		{
+			MethodName: "GetApiListByMenu",
+			Handler:    _Api_GetApiListByMenu_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "usercenter.proto",
 }
 
-// AuthClient is the client API for Auth service.
+// TokenClient is the client API for Token service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AuthClient interface {
-	GetMenuAuthority(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleMenuAuthorityResp, error)
-	CreateOrUpdateMenuAuthority(ctx context.Context, in *RoleMenuAuthorityReq, opts ...grpc.CallOption) (*BaseResp, error)
+type TokenClient interface {
+	CreateToken(ctx context.Context, in *CreateTokenReq, opts ...grpc.CallOption) (*BaseResp, error)
+	DeleteToken(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetToken(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTokenResp, error)
+	GetTokenList(ctx context.Context, in *GetTokenListReq, opts ...grpc.CallOption) (*GetTokenListResp, error)
+	BlockAllTokenByUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
 }
 
-type authClient struct {
+type tokenClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
-	return &authClient{cc}
+func NewTokenClient(cc grpc.ClientConnInterface) TokenClient {
+	return &tokenClient{cc}
 }
 
-func (c *authClient) GetMenuAuthority(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleMenuAuthorityResp, error) {
-	out := new(RoleMenuAuthorityResp)
-	err := c.cc.Invoke(ctx, "/pb.Auth/GetMenuAuthority", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authClient) CreateOrUpdateMenuAuthority(ctx context.Context, in *RoleMenuAuthorityReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *tokenClient) CreateToken(ctx context.Context, in *CreateTokenReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
-	err := c.cc.Invoke(ctx, "/pb.Auth/CreateOrUpdateMenuAuthority", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Token/CreateToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AuthServer is the server API for Auth service.
-// All implementations must embed UnimplementedAuthServer
+func (c *tokenClient) DeleteToken(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Token/DeleteToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tokenClient) GetToken(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetTokenResp, error) {
+	out := new(GetTokenResp)
+	err := c.cc.Invoke(ctx, "/pb.Token/GetToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tokenClient) GetTokenList(ctx context.Context, in *GetTokenListReq, opts ...grpc.CallOption) (*GetTokenListResp, error) {
+	out := new(GetTokenListResp)
+	err := c.cc.Invoke(ctx, "/pb.Token/GetTokenList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tokenClient) BlockAllTokenByUser(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, "/pb.Token/BlockAllTokenByUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TokenServer is the server API for Token service.
+// All implementations must embed UnimplementedTokenServer
 // for forward compatibility
-type AuthServer interface {
-	GetMenuAuthority(context.Context, *IDReq) (*RoleMenuAuthorityResp, error)
-	CreateOrUpdateMenuAuthority(context.Context, *RoleMenuAuthorityReq) (*BaseResp, error)
-	mustEmbedUnimplementedAuthServer()
+type TokenServer interface {
+	CreateToken(context.Context, *CreateTokenReq) (*BaseResp, error)
+	DeleteToken(context.Context, *IDReq) (*BaseResp, error)
+	GetToken(context.Context, *IDReq) (*GetTokenResp, error)
+	GetTokenList(context.Context, *GetTokenListReq) (*GetTokenListResp, error)
+	BlockAllTokenByUser(context.Context, *IDReq) (*BaseResp, error)
+	mustEmbedUnimplementedTokenServer()
 }
 
-// UnimplementedAuthServer must be embedded to have forward compatible implementations.
-type UnimplementedAuthServer struct {
+// UnimplementedTokenServer must be embedded to have forward compatible implementations.
+type UnimplementedTokenServer struct {
 }
 
-func (UnimplementedAuthServer) GetMenuAuthority(context.Context, *IDReq) (*RoleMenuAuthorityResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuAuthority not implemented")
+func (UnimplementedTokenServer) CreateToken(context.Context, *CreateTokenReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateToken not implemented")
 }
-func (UnimplementedAuthServer) CreateOrUpdateMenuAuthority(context.Context, *RoleMenuAuthorityReq) (*BaseResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateMenuAuthority not implemented")
+func (UnimplementedTokenServer) DeleteToken(context.Context, *IDReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteToken not implemented")
 }
-func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
+func (UnimplementedTokenServer) GetToken(context.Context, *IDReq) (*GetTokenResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetToken not implemented")
+}
+func (UnimplementedTokenServer) GetTokenList(context.Context, *GetTokenListReq) (*GetTokenListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTokenList not implemented")
+}
+func (UnimplementedTokenServer) BlockAllTokenByUser(context.Context, *IDReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockAllTokenByUser not implemented")
+}
+func (UnimplementedTokenServer) mustEmbedUnimplementedTokenServer() {}
 
-// UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AuthServer will
+// UnsafeTokenServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TokenServer will
 // result in compilation errors.
-type UnsafeAuthServer interface {
-	mustEmbedUnimplementedAuthServer()
+type UnsafeTokenServer interface {
+	mustEmbedUnimplementedTokenServer()
 }
 
-func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
-	s.RegisterService(&Auth_ServiceDesc, srv)
+func RegisterTokenServer(s grpc.ServiceRegistrar, srv TokenServer) {
+	s.RegisterService(&Token_ServiceDesc, srv)
 }
 
-func _Auth_GetMenuAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Token_CreateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTokenReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TokenServer).CreateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Token/CreateToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TokenServer).CreateToken(ctx, req.(*CreateTokenReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Token_DeleteToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).GetMenuAuthority(ctx, in)
+		return srv.(TokenServer).DeleteToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Auth/GetMenuAuthority",
+		FullMethod: "/pb.Token/DeleteToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).GetMenuAuthority(ctx, req.(*IDReq))
+		return srv.(TokenServer).DeleteToken(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_CreateOrUpdateMenuAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleMenuAuthorityReq)
+func _Token_GetToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).CreateOrUpdateMenuAuthority(ctx, in)
+		return srv.(TokenServer).GetToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Auth/CreateOrUpdateMenuAuthority",
+		FullMethod: "/pb.Token/GetToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).CreateOrUpdateMenuAuthority(ctx, req.(*RoleMenuAuthorityReq))
+		return srv.(TokenServer).GetToken(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
+func _Token_GetTokenList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTokenListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TokenServer).GetTokenList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Token/GetTokenList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TokenServer).GetTokenList(ctx, req.(*GetTokenListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Token_BlockAllTokenByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TokenServer).BlockAllTokenByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Token/BlockAllTokenByUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TokenServer).BlockAllTokenByUser(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Token_ServiceDesc is the grpc.ServiceDesc for Token service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Auth_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Auth",
-	HandlerType: (*AuthServer)(nil),
+var Token_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.Token",
+	HandlerType: (*TokenServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetMenuAuthority",
-			Handler:    _Auth_GetMenuAuthority_Handler,
+			MethodName: "CreateToken",
+			Handler:    _Token_CreateToken_Handler,
 		},
 		{
-			MethodName: "CreateOrUpdateMenuAuthority",
-			Handler:    _Auth_CreateOrUpdateMenuAuthority_Handler,
+			MethodName: "DeleteToken",
+			Handler:    _Token_DeleteToken_Handler,
+		},
+		{
+			MethodName: "GetToken",
+			Handler:    _Token_GetToken_Handler,
+		},
+		{
+			MethodName: "GetTokenList",
+			Handler:    _Token_GetTokenList_Handler,
+		},
+		{
+			MethodName: "BlockAllTokenByUser",
+			Handler:    _Token_BlockAllTokenByUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

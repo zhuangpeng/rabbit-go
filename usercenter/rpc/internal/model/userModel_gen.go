@@ -24,8 +24,8 @@ import (
 var (
 	userFieldNames          = builder.RawFieldNames(&User{})
 	userRows                = strings.Join(userFieldNames, ",")
-	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), ",")
-	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), "=?,") + "=?"
+	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 
 	cacheUserCenterUserIdPrefix     = "cache:userCenter:user:id:"
 	cacheUserCenterUserEmailPrefix  = "cache:userCenter:user:email:"
@@ -51,22 +51,22 @@ type (
 	}
 
 	User struct {
-		Id          string       `db:"id"` // 用户标识
-		Name        string       `db:"name"`
-		Password    string       `db:"password"` // 密码
-		Nickname    string       `db:"nickname"`
-		SideMode    string       `db:"side_mode"`
-		BaseColor   string       `db:"base_color"`
-		ActiveColor string       `db:"active_color"`
-		Mobile      string       `db:"mobile"`
-		Email       string       `db:"email"`
-		Avatar      string       `db:"avatar"`     // 头像
-		Status      int64        `db:"status"`     // 状态 1--正常 2--禁用
-		Deleted     int64        `db:"deleted"`    // 是否删除 1--否  2--是
-		CreatedAt   time.Time    `db:"created_at"` // 创建时间
-		UpdatedAt   sql.NullTime `db:"updated_at"` // 修改时间
-		DeletedAt   sql.NullTime `db:"deleted_at"` // 删除时间
-		Revision    int64        `db:"revision"`   // 乐观锁修订版本号
+		Id          string       `db:"id"`           // 用户标识
+		Name        string       `db:"name"`         // 用户名
+		Password    string       `db:"password"`     // 密码
+		Nickname    string       `db:"nickname"`     // 昵称
+		SideMode    string       `db:"side_mode"`    // 布局方式
+		BaseColor   string       `db:"base_color"`   // 后台页面色调
+		ActiveColor string       `db:"active_color"` // 当前激活颜色设定
+		Mobile      string       `db:"mobile"`       // 联系电话
+		Email       string       `db:"email"`        // 邮箱
+		Avatar      string       `db:"avatar"`       // 头像
+		Status      int64        `db:"status"`       // 状态 1--正常 2--禁用
+		Deleted     int64        `db:"deleted"`      // 是否删除 1--否  2--是
+		CreatedAt   time.Time    `db:"created_at"`   // 创建时间
+		UpdatedAt   sql.NullTime `db:"updated_at"`   // 修改时间
+		DeletedAt   sql.NullTime `db:"deleted_at"`   // 删除时间
+		Revision    int64        `db:"revision"`     // 乐观锁修订版本号
 	}
 )
 

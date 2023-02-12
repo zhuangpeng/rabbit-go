@@ -17,5 +17,4 @@ type Config struct {
 	RedisConf    redis.RedisConf
 	Cache 		 cache.CacheConf
 	CasbinConf   config.CasbinConf
-	GlobalEnv    config.GLobalEnv
 }

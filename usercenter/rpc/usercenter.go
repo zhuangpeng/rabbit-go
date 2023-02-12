@@ -6,11 +6,11 @@ import (
 
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/config"
 	apiServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/api"
-	authServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/auth"
-	initServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/init"
 	menuServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/menu"
 	roleServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/role"
+	stationServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/station"
 	tenantServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/tenant"
+	tokenServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/token"
 	userServer "github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/server/user"
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/svc"
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
@@ -32,13 +32,13 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterInitServer(grpcServer, initServer.NewInitServer(ctx))
-		pb.RegisterTenantServer(grpcServer, tenantServer.NewTenantServer(ctx))
 		pb.RegisterUserServer(grpcServer, userServer.NewUserServer(ctx))
-		pb.RegisterMenuServer(grpcServer, menuServer.NewMenuServer(ctx))
+		pb.RegisterStationServer(grpcServer, stationServer.NewStationServer(ctx))
 		pb.RegisterRoleServer(grpcServer, roleServer.NewRoleServer(ctx))
+		pb.RegisterMenuServer(grpcServer, menuServer.NewMenuServer(ctx))
+		pb.RegisterTenantServer(grpcServer, tenantServer.NewTenantServer(ctx))
 		pb.RegisterApiServer(grpcServer, apiServer.NewApiServer(ctx))
-		pb.RegisterAuthServer(grpcServer, authServer.NewAuthServer(ctx))
+		pb.RegisterTokenServer(grpcServer, tokenServer.NewTokenServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

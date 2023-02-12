@@ -1,31 +1,25 @@
 syntax = "proto3";
-
 package pb;
-
 option go_package = "./pb";
 
-// base message
+// *****************通用消息*******************
 message Empty {
 }
 
 message IDReq {
-  string id = 1;
+  uint64 id = 1;
 }
 
 message IDResp {
   string id = 1;
 }
 
-message IDsReq {
+message IDsReq {  
   repeated string ids = 1;
 }
 
-message UUIDsReq {
+message IDsResp {
   repeated string ids = 1;
-}
-
-message UUIDReq {
-  string id = 1;
 }
 
 message BaseResp {
@@ -33,180 +27,280 @@ message BaseResp {
 }
 
 message PageInfoReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
+  string id = 1;
+  uint64 page = 2;
+  uint64 page_size = 3;
 }
-
 message StatusCodeReq {
-  string id = 1;
-  int64 status = 2;
+  uint64 id = 1;
+  uint64 status = 2;
 }
 
-message StatusCodeUUIDReq {
-  string id = 1;
-  int64 status = 2;
+message ChangePositionReq {
+  string from_id = 1; 
+  string to_id = 2;
+  string method = 3;  // 1-insert 2-replace
 }
 
-// tenant message
+// *****************用户模块*****************
 
-message CreateOrUpdateTenantReq {
-  string id = 1;
-  string parent_id = 2;
-  string name = 3;
-  string contact = 4;
+// 添加单一用户
+// 请求消息
+message CreateUserReq {
+  string name = 1;
+  string nickname = 2;
+  string password = 3;
+  string avatar = 4;
   string mobile = 5;
-  uint32 sort_no = 6;
-  int64 start_time = 7;
-  int64 end_time = 8;
-  uint32 status = 9;
+  string email = 6;
 }
 
-message TenantInfo {
-  string id = 1;
-  string parent_id = 2;
-  string name = 3;
-  string contact = 4;
-  string mobile = 5;
-  uint32 sort_no = 6;
-  uint32 status = 7;
-  uint32 leaf = 8;
-  int64 start_time = 9;
-  int64 end_time = 10;
-  int64 created_at = 11;
-  int64 updated_at = 12;
+// 批量添加用户
+// 请求消息
+message BatchCreateUserReq {
+  repeated CreateUserReq users = 1;
+}
+// 修改用户信息
+// 请求消息
+message UpdateProfileReq {
+  string name = 1;
+  string nickname = 2;
+  string password = 3;
+  string avatar = 4;
+  string side_mode = 5;
+  string base_color = 6;
+  string active_color = 7;
 }
 
-message TenantListReq {
-  string user_id = 1;
-  string parent_id = 2;
-}
-
-message TenantListResp {
-  repeated TenantInfo data = 1;
-}
-
-message TenantTreeInfo {
-  string id = 1;
-  string parent_id = 2;
-  string name = 3;
-  uint32 level = 4;
-  string contact = 5;
-  string mobile = 6;
-  uint32 sort_no = 7;
-  int64 start_time = 8;
-  int64 end_time = 9;
-  uint32 status = 10;
-  bool leaf = 11;
-  int64 created_at = 12;
-  int64 updated_at = 13;
-  repeated TenantTreeInfo children = 14;
-}
-
-message TenantTreeListResp {
-  repeated TenantTreeInfo data = 1;
-}
-
-// user message
-
-message LoginReq {
-  string username = 1;
-  string password = 2;
-}
-
-message LoginResp {
-  string id = 1;
-  string role_name = 2;
-  string role_value = 3;
-  string role_id = 4;
-}
-
-message ChangePasswordReq {
-  string id = 1;
-  string old_password = 2;
-  string new_password = 3;
-}
-
-message CreateOrUpdateUserReq {
-  string id = 1;
-  string username = 2;
-  string nickname = 3;
-  string password = 4;
-  string avatar = 5;
-  string mobile = 6;
-  string email = 7;
-}
-
+// 查询指定用户
+// 返回消息
 message UserInfoResp {
   string id = 1;
-  string avatar = 2;
-  string role_id = 3;
+  string name = 2;
+  string nickname = 3;
   string mobile = 4;
   string email = 5;
-  int64 status = 6;
-  string username = 7;
-  string nickname = 8;
-  string role_name = 9;
-  int64 created_at = 10;
-  int64 updated_at = 11;
-  string role_value = 12;
+  string avatar = 7;
+  string side_mode = 8;
+  string base_color = 9;
+  string active_color = 10;
+  uint32 status = 11;
+  int64 created_at = 12;
 }
 
+// 查询用户列表
+// 返回消息
 message UserListResp {
   uint64 total = 1;
-  repeated UserInfoResp data = 2;
+  repeated UserInfoResp users = 2;
 }
 
-message GetUserListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string username = 3;
-  string nickname = 4;
-  string email = 5;
-  string mobile = 6;
-  string role_id = 7;
+// 用户系统登录
+// 请求消息
+message LoginReq {
+  string auth_type = 1;  // 1-用户 2-手机 3-邮箱
+  string auth_key = 2;
+  string password = 3;
 }
-
-message UpdateProfileReq {
+// 返回消息
+message LoginResp {
   string id = 1;
-  string nickname = 2;
-  string email = 3;
-  string mobile = 4;
-  string avatar = 5;
+  map<string, string> role_names = 2;   // 角色键值对
+  map<string, string> role_values = 3;  // 角色键值对
+  map<string, string> depts = 4;  // 单位键值对
 }
 
-// menu messages
-
-message CreateOrUpdateMenuReq {
+// 修改登录密码
+// 请求消息
+message ChangePasswdReq {
   string id = 1;
-  string parent_id = 2;
-  string path = 3;
-  string name = 4;
-  string redirect = 5;
-  string component = 6;
-  uint32 sort = 7;
-  bool disabled = 8;
-  Meta meta = 9;
-  uint32 level = 10;
-  uint32 menu_type = 11;
+  string old_passwd = 2;
+  string new_passwd = 3;
 }
 
-message MenuInfo {
+// 接口服务定义
+service User {
+  rpc CreateUser (CreateUserReq) returns (BaseResp);
+  rpc BatchCreateUsers(BatchCreateUserReq) returns (IDsResp);
+  rpc DeleteUser (IDReq) returns (BaseResp);
+  rpc BatchDeleteUser (IDsResp) returns (BaseResp);
+  rpc UpdateProfile (UpdateProfileReq) returns (BaseResp);
+  rpc GetUser (IDReq) returns (UserInfoResp);
+  rpc GetUserList (PageInfoReq) returns (UserListResp);
+  rpc UpdateUserStatus (StatusCodeReq) returns (BaseResp);
+  rpc Login(LoginReq) returns (LoginResp);
+  rpc ChangePassword (ChangePasswdReq) returns (BaseResp);
+}
+
+// *****************岗位模块*****************
+  
+// 消息体
+message StationInfo {
   string id = 1;
+  string name = 2;
+  string tenant_id = 3;
+  uint32 sort = 4;
+  int64 create_at = 5;
+}
+message TSRU {  // tenant station role user
+  string tenant_id = 1;
+  string tenant_name = 2;
+  string station_id = 3;
+  string station_name = 4;
+  string role_id = 5;
+  string role_name = 6;
+  string user_id = 7;
+  string user_name = 8;
+  int64  create_at = 9;
+}
+
+// 添加岗位
+// 请求消息
+message CreateStationReq {
+  string name = 1;
+  string tenant_id = 2;
+}
+
+// 根据ID查询岗位
+// 返回消息
+message GetStationResp {
+  StationInfo station = 1;
+}
+
+// 根据人员ID查询岗位
+// 返回消息
+message GetStationByUserResp {
+  repeated StationInfo stations = 1;
+}
+
+// 修改岗位
+// 请求消息
+message UpdateStationReq {
+  string id = 1;
+  string name = 2;
+  string tenant_id = 3;
+}
+
+// 调整单位
+// 请求消息
+message ChangeDept {
+  string from_id = 1;
+  string to_id = 2;
+}
+
+// 授权角色
+// 请求消息
+message GrantRoleReq {
+  repeated string role_ids = 1;
+  string station_id = 2;
+}
+
+// 分配人员
+// 请求消息
+message StationUserReq {
+  string station_id = 1;
+  string user_id = 2;
+}
+
+// 替换人员
+// 请求消息
+message ReplaceUserReq {
+  string from_id = 1;
+  string to_id = 2;
+}
+
+// 查询岗位列表
+// 返回消息
+message GetStationListResp {
+  uint64 total = 1;
+  repeated TSRU tsru_lists = 2;
+}
+
+// 接口服务定义
+service Station {
+  rpc CreateStation (CreateStationReq) returns (BaseResp);
+  rpc DeleteStation (IDResp) returns (BaseResp);
+  rpc GetStation (IDReq) returns (GetStationResp);
+  rpc GetStationByUser (IDReq) returns (GetStationByUserResp);
+  rpc UpdateStation (UpdateStationReq) returns (BaseResp);
+  rpc UpdateStationSort(ChangePositionReq) returns (BaseResp);
+  rpc UpdateDep (ChangeDept) returns (BaseResp);
+  rpc GrantRoleToStation (GrantRoleReq) returns (BaseResp);
+  rpc GrantStationToUser (StationUserReq) returns (BaseResp);
+  rpc ReplaceStationUser (ReplaceUserReq) returns (BaseResp);
+  rpc GetStationList (PageInfoReq) returns (GetStationListResp);
+}
+
+// *****************角色模块*****************
+
+// 添加角色
+// 消息体
+message RoleInfo {
+  string name = 1;
+  string value = 2;
+  string default_router = 3;
+  string remark = 4;
+}
+// 请求消息
+message CreateRoleReq {
+  RoleInfo create_role = 1;
+}
+
+// 修改角色
+// 请求消息
+message UpdateRoleReq {
+  RoleInfo update_role = 1;
+}
+
+// 查询角色
+// 返回消息
+message GetRoleResp {
+  RoleInfo role_info = 1;
   int64 created_at = 2;
-  int64 updated_at = 3;
-  uint32 level = 4;
-  string parent_id = 5;
-  string path = 6;
-  string name = 7;
-  string redirect = 8;
-  string component = 9;
-  uint32 sort = 10;
-  bool disabled = 11;
-  Meta meta = 12;
-  repeated MenuInfo children = 13;
-  uint32 menu_type = 14;
 }
 
+// 角色授权菜单
+// 请求消息
+message GrantMenuToRoleReq {
+  string role_id = 1;
+  repeated string menu_ids = 2;
+}
+
+// 角色授权接口
+// 请求消息
+message GrantApiToRoleReq {
+  string role_id = 1;
+  repeated string api_ids = 2;
+}
+
+// 角色授权岗位
+// 请求消息
+message GrantRoleToStationReq {
+  string role_id = 1;
+  repeated string station_ids = 2;
+}
+
+// 查询角色列表
+// 返回消息
+message RoleListResp {
+  repeated RoleInfo roles = 1;
+}
+
+// 接口服务定义
+service Role {
+  rpc CreateRole (CreateRoleReq) returns (BaseResp);
+  rpc DeleteRole (IDReq) returns (BaseResp);
+  rpc UpdateRole (UpdateRoleReq) returns (BaseResp);
+  rpc GetRole (IDReq) returns (GetRoleResp);
+  rpc GrantMenuToRole (GrantMenuToRoleReq) returns (BaseResp);
+  rpc GrantApiToRole (GrantApiToRoleReq) returns (BaseResp);
+  rpc GrantRoleToStation (GrantRoleToStationReq) returns (BaseResp);
+  rpc GetRoleList (PageInfoReq) returns (RoleListResp);
+}
+
+// *****************菜单模块*****************
+  
+// 消息体
 message Meta {
   string title = 1;
   string icon = 2;
@@ -222,32 +316,24 @@ message Meta {
   uint32 dynamic_level = 12;
   string real_path = 13;
 }
-
-message MenuInfoList {
-  uint64 total = 1;
-  repeated MenuInfo data = 2;
-}
-
-message MenuRoleInfo {
+message MenuInfo {
   string id = 1;
-  string menu_id = 2;
-  string role_id = 3;
+  uint64 parent_id = 2;
+  string name = 3;
+  uint32 menu_type = 4;
+  uint32 level = 5;
+  string path = 6;
+  string redirect = 7;
+  string component = 8;
+  uint32 order_no = 9;
+  bool disabled = 10;
+  Meta meta = 11;
+  repeated MenuInfo children = 12;
+  int64 created_at = 13;
+  int64 updated_at = 14;
+  int64 deleted_at = 15;
 }
-
-message MenuRoleListResp {
-  uint64 total = 1;
-  repeated MenuRoleInfo data = 2;
-}
-
-message CreateOrUpdateMenuParamReq {
-  string id = 1;
-  string menu_id = 2;
-  string type = 3;
-  string key = 4;
-  string value = 5;
-}
-
-message MenuParamResp {
+message MenuParamInfo {
   string id = 1;
   string type = 3;
   string key = 4;
@@ -256,129 +342,267 @@ message MenuParamResp {
   int64 updated_at = 7;
 }
 
-message MenuParamListResp {
-  uint64 total = 1;
-  repeated MenuParamResp data = 2;
-}
-
-// role messages
-
-message RoleInfo {
+//添加菜单
+// 请求消息
+message CreateMenuReq {
   string id = 1;
-  string name = 2;
-  string value = 3;
-  string default_router = 4;
-  int64 status = 5;
-  string remark = 6;
-  uint32 sort = 7;
-  int64 create_time = 8;
+  uint64 parent_id = 2;
+  string name = 3;
+  uint32 level = 4;
+  string path = 5;
+  uint32 category = 6;
+  string redirect = 7;
+  string component = 8;
+  uint32 sort = 9;
+  bool disabled = 10;
+  uint32 menu_type = 12;
+  Meta meta = 13;
 }
 
-message RoleListResp {
+//修改菜单
+// 请求消息
+message UpdateMenuReq {
+  string id = 1;
+  uint64 parent_id = 2;
+  string name = 3;
+  uint32 level = 4;
+  string path = 5;
+  uint32 category = 6;
+  string redirect = 7;
+  string component = 8;
+  uint32 sort = 9;
+  bool disabled = 10;
+  uint32 menu_type = 12;
+  Meta meta = 13;
+}
+
+//添加传参
+// 请求消息
+message CreateMenuParamReq {
+  string id = 1;
+  string menu_id = 2;
+  string type = 3;
+  string key = 4;
+  string value = 5;
+}
+
+// 获取菜单列表
+// 请求消息
+message GetMenuListReq {
+  string tenant_id = 1;
+  string role_id = 2;
+  uint64 page = 3;
+  uint64 page_size = 4;
+}
+// 返回消息
+message GetMenuListResp {
   uint64 total = 1;
-  repeated RoleInfo data = 2;
+  repeated MenuInfo menus = 2;
 }
 
+// 根据菜单获取传参
+// 返回消息
+message GetParamsByMenuResp {
+  repeated MenuParamInfo menu_params = 1;
+}
 
+// 调整菜单包含默认接口
+// 请求消息
+message UpdateMenuParamsReq {
+  string menu_id = 1;
+  repeated string param_ids = 2;
+}
 
-// casbin
-message UpdatePolicyReq {
+// 接口服务定义
+service Menu {
+  rpc CreateMenu (CreateMenuReq) returns (BaseResp);
+  rpc UpdateMenu (UpdateMenuReq) returns (BaseResp);
+  rpc DeleteMenu (IDReq) returns (BaseResp);
+  rpc CreateMenuParam (CreateMenuParamReq) returns (BaseResp);
+  rpc DeleteParams (IDReq) returns (BaseResp);
+  rpc GetMenuList (GetMenuListReq) returns (GetMenuListResp);
+  rpc GetParamsByMenu (IDReq) returns (GetParamsByMenuResp);
+  rpc UpdateMenuParams (UpdateMenuParamsReq) returns (BaseResp);
+}
+
+// *****************租户管理*****************
+
+// 消息体
+message TenantInfo {
+  string id = 1;
+  string parent_id = 2;
+  string name = 3;
+  string contact = 4;
+  string mobile = 5;
+  uint32 sort_no = 6;
+  uint32 status = 7;
+  int64 start_time = 8;
+  int64 end_time = 9;
+  uint32 has_child = 10;
+}
+
+// 添加租户
+// 请求消息
+message CreateTenantReq {
+  TenantInfo tenant = 1;
+}
+
+// 修改租户基本信息
+// 请求消息
+message UpdateTenantReq {
+  string id = 1;
+  string parent_id = 2;
+  string name = 3;
+  string contact = 4;
+  string mobile = 5;
+}
+
+// 查询租户
+// 返回消息
+message GetTenantResp {
+  string id = 1;
+  string parent_id = 2;
+  string name = 3;
+  string contact = 4;
+  string mobile = 5;
+  uint32 sort_no = 6;
+  uint32 status = 7;
+  int64 start_time = 8;
+  int64 end_time = 9;
+}
+
+// 授权菜单
+// 请求消息
+message GrantMenusToRoleReq {
   string role_id = 1;
-  repeated PolicyPartInfo rules = 2;
+  repeated string menu_ids = 2;
 }
 
-message PolicyPartInfo {
-  string path = 1;
-  string method = 2;
+// 修改授权时间
+// 请求消息
+message UpdatePeriodReq {
+  string id = 1;
+  int64 start_time = 2;
+  int64 end_time = 3;
 }
 
-message CreatePolicyReq {
-  string role_id = 1;
-  PolicyPartInfo info = 2;
+// 修改状态
+// 请求消息
+message UpdateStatusReq {
+  string id = 1;
+  int32 status = 2;
 }
 
-// api message
+// 查询租户列表
+// 返回消息
+message GetTeantListResp {
+  repeated TenantInfo tenant_lists = 1;
+}
+
+// 接口服务定义
+service Tenant {
+  rpc CreateTenant (CreateTenantReq) returns (BaseResp);
+  rpc DeleteTenant (IDReq) returns (BaseResp);
+  rpc UpdateTenant (UpdateTenantReq) returns (BaseResp);
+  rpc GetTenant (IDReq) returns (GetTenantResp);
+  rpc GrantMenuToRole (GrantMenusToRoleReq) returns (BaseResp);
+  rpc UpdateTenantPeriod (UpdatePeriodReq) returns (BaseResp);
+  rpc UpdateTenantStatus (UpdateStatusReq) returns (BaseResp);
+  rpc GetTenantList (IDReq) returns (GetTeantListResp);
+}
+// *****************接口管理*****************
+// 消息体
 message ApiInfo {
   string id = 1;
-  int64 created_at = 2;
-  int64 updated_at = 3;
-  string path = 4;
+  string path = 2;
+  string group = 3;
+  string method = 4;
   string description = 5;
-  string group = 6;
-  string method = 7;
+  int64 created_at = 6;
+  int64 updated_at = 7;
 }
 
-message ApiListResp {
-  uint64 total = 1;
-  repeated ApiInfo data = 2;
+// 添加接口
+// 请求消息
+message CreateApiReq {
+  string id = 1;
+  string path = 2;
+  string group = 3;
+  string method = 4;
+  string description = 5;
 }
 
-message ApiPageReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string path = 3;
-  string description = 4;
-  string method = 5;
-  string group = 6;
+// 修改接口
+// 请求消息
+message UpdateApiReq {
+  string id = 1;
+  string path = 2;
+  string group = 3;
+  string method = 4;
+  string description = 5;
 }
 
-// authorization message
-message RoleMenuAuthorityReq {
-  string role_id = 1;
-  repeated uint64 menu_ids = 2;
-}
-// return the role's authorization menu's ids
-message RoleMenuAuthorityResp {
-  repeated uint64 menu_ids = 1;
+// 查询接口
+// 返回消息
+message GetApiResp {
+  ApiInfo api_info = 1;
 }
 
-service Init {
-  rpc InitDatabase (Empty) returns (BaseResp);
+// 查询接口列表
+// 返回消息
+message GetApiListResp {
+  repeated ApiInfo api_infos = 1;
 }
 
-service Tenant {
-  rpc CreateOrUpdateTenant (CreateOrUpdateTenantReq) returns (IDResp);
-  rpc DeleteTenant(UUIDReq) returns (BaseResp);
-  rpc GetTenantTreeList (TenantListReq) returns (TenantListResp);
-}
-
-service User {
-  rpc Login(LoginReq) returns (LoginResp);
-  rpc ChangePassword (ChangePasswordReq) returns (BaseResp);
-  rpc CreateOrUpdateUser (CreateOrUpdateUserReq) returns (BaseResp);
-  rpc GetUserById (UUIDReq) returns (UserInfoResp);
-  rpc GetUserList (GetUserListReq) returns (UserListResp);
-  rpc DeleteUser (UUIDReq) returns (BaseResp);
-  rpc BatchDeleteUser (UUIDsReq) returns (BaseResp);
-  rpc UpdateProfile (UpdateProfileReq) returns (BaseResp);
-  rpc UpdateUserStatus (StatusCodeUUIDReq) returns (BaseResp);
-}
-
-service Menu {
-  rpc CreateOrUpdateMenu (CreateOrUpdateMenuReq) returns (BaseResp);
-  rpc DeleteMenu (IDReq) returns (BaseResp);
-  rpc GetMenuListByRole (IDReq) returns (MenuInfoList);
-  rpc GetMenuList (PageInfoReq) returns (MenuInfoList);
-  rpc CreateOrUpdateMenuParam (CreateOrUpdateMenuParamReq) returns (BaseResp);
-  rpc DeleteMenuParam (IDReq) returns (BaseResp);
-  rpc GetMenuParamListByMenuId (IDReq) returns (MenuParamListResp);
-}
-
-service Role {
-  rpc CreateOrUpdateRole (RoleInfo) returns (BaseResp);
-  rpc DeleteRole (IDReq) returns (BaseResp);
-  rpc GetRoleById (IDReq) returns (RoleInfo);
-  rpc GetRoleList (PageInfoReq) returns (RoleListResp);
-  rpc UpdateRoleStatus (StatusCodeReq) returns (BaseResp);
-}
-
+// 接口服务定义
 service Api {
-  rpc CreateOrUpdateApi (ApiInfo) returns (BaseResp);
+  rpc CreateApi (CreateApiReq) returns (BaseResp);
   rpc DeleteApi (IDReq) returns (BaseResp);
-  rpc GetApiList (ApiPageReq) returns (ApiListResp);
+  rpc UpdateApi (UpdateApiReq) returns (BaseResp);
+  rpc GetApi (IDReq) returns (GetApiResp);
+  rpc GetApiListByMenu (IDReq) returns (GetApiListResp);
 }
 
-service Auth {
-  rpc GetMenuAuthority (IDReq) returns (RoleMenuAuthorityResp);
-  rpc CreateOrUpdateMenuAuthority (RoleMenuAuthorityReq) returns (BaseResp);
+// *****************令牌管理*****************
+// 消息体
+message TokenInfo {
+  string id = 1;
+  string toekn = 2;
+  string source = 3;
+  uint64 expired_at = 4;
+  uint32 status = 5;
+  uint64 created_at = 6;
+}
+
+// 创建令牌
+// 请求消息
+message CreateTokenReq {
+  string toekn = 2;
+  string source = 3;
+  uint64 expired_at = 4;
+}
+
+// 查询令牌
+// 返回消息
+message GetTokenResp {
+  TokenInfo token_info = 1;
+}
+
+// 查询令牌列表
+// 请求消息
+message GetTokenListReq {
+  string tenant_id = 1;
+}
+// 返回消息
+message GetTokenListResp {
+  repeated TokenInfo tokens = 1;
+}
+
+// 接口服务定义
+service Token {
+  rpc CreateToken (CreateTokenReq) returns (BaseResp);
+  rpc DeleteToken (IDReq) returns (BaseResp);
+  rpc GetToken (IDReq) returns (GetTokenResp);
+  rpc GetTokenList (GetTokenListReq) returns (GetTokenListResp);
+  rpc BlockAllTokenByUser (IDReq) returns (BaseResp);
 }

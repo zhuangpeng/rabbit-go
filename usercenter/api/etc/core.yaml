@@ -1,0 +1,18 @@
+Name: core.api
+Host: 0.0.0.0
+Port: 9100
+Timeout: 30000
+
+Log:
+  ServiceName: coreApiLogger
+  Mode: console 
+  Path: /home/data/logs/core/api
+  Level: info
+  Compress: false
+  KeepDays: 7
+  StackCoolDownMillis: 100
+
+UserRpcConf:
+  # Target: k8s://default/core-rpc-svc:9101
+  Endpoints:
+    - 127.0.0.1:9101

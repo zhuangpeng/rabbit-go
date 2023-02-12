@@ -1,21 +1,39 @@
 import "base.api"
 
-type (    
-    UserInfo {
-        BaseInfo
-        Status  uint32 `json:"status,optional"`
-        Username  string `json:"username,optional"`
-        Nickname  string `json:"nickname,optional"`
-        Password  string `json:"password,optional"`
-        Description  string `json:"description,optional"`
-        HomePath  string `json:"homePath,optional"`
-        RoleId  uint64 `json:"roleId,optional"`
-        Mobile  string `json:"mobile,optional"`
-        Email  string `json:"email,optional"`
-        Avatar  string `json:"avatar,optional"`
-        DepartmentId  uint64 `json:"departmentId,optional"`
-        PositionId  uint64 `json:"positionId,optional"`
-        RoleName  string `json:"roleName,optional"`
-        RoleValue  string `json:"roleValue,optional"`
-    }
+type (
+	// The Moudle Base info | 模块基础信息
+	// The user data | 用户信息数据
+	UserInfo {
+		BaseInfo
+		Status      uint32 `json:"status,optional"`
+		Username    string `json:"username,optional"`
+		Nickname    string `json:"nickname,optional"`
+		Password    string `json:"password,optional"`
+		Description string `json:"description,optional"`
+		HomePath    string `json:"homePath,optional"`
+		RoleId      uint64 `json:"roleId,optional"`
+		Mobile      string `json:"mobile,optional"`
+		Email       string `json:"email,optional"`
+		Avatar      string `json:"avatar,optional"`
+	}
+	// The restful info | 接口信息
+	// The log in information | 登陆返回的数据信息
+	RegisterReq {
+		Username  string `json:"username" validate:"alphanum,max=20"`
+		Nickname  string `json:"nickname" validate:"max=20"`
+		Password  string `json:"password" validate:"max=30,min=6"`
+		CaptchaId string `json:"captchaId" validate:"len=20"`
+		Captcha   string `json:"captcha" validate:"len=5"`
+		Email     string `json:"email" validate:"email,max=100"`
+		Mobile    string `json:"mobile"`
+	}
 )
+
+@server(
+	group: user
+)
+
+service core {
+	@handler register
+	post /user/register (RegisterReq) returns (BaseMsgResp)
+}

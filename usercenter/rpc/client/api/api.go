@@ -13,54 +13,77 @@ import (
 )
 
 type (
-	ApiInfo                    = pb.ApiInfo
-	ApiListResp                = pb.ApiListResp
-	ApiPageReq                 = pb.ApiPageReq
-	BaseResp                   = pb.BaseResp
-	ChangePasswordReq          = pb.ChangePasswordReq
-	CreateOrUpdateMenuParamReq = pb.CreateOrUpdateMenuParamReq
-	CreateOrUpdateMenuReq      = pb.CreateOrUpdateMenuReq
-	CreateOrUpdateTenantReq    = pb.CreateOrUpdateTenantReq
-	CreateOrUpdateUserReq      = pb.CreateOrUpdateUserReq
-	CreatePolicyReq            = pb.CreatePolicyReq
-	Empty                      = pb.Empty
-	GetUserListReq             = pb.GetUserListReq
-	IDReq                      = pb.IDReq
-	IDResp                     = pb.IDResp
-	IDsReq                     = pb.IDsReq
-	LoginReq                   = pb.LoginReq
-	LoginResp                  = pb.LoginResp
-	MenuInfo                   = pb.MenuInfo
-	MenuInfoList               = pb.MenuInfoList
-	MenuParamListResp          = pb.MenuParamListResp
-	MenuParamResp              = pb.MenuParamResp
-	MenuRoleInfo               = pb.MenuRoleInfo
-	MenuRoleListResp           = pb.MenuRoleListResp
-	Meta                       = pb.Meta
-	PageInfoReq                = pb.PageInfoReq
-	PolicyPartInfo             = pb.PolicyPartInfo
-	RoleInfo                   = pb.RoleInfo
-	RoleListResp               = pb.RoleListResp
-	RoleMenuAuthorityReq       = pb.RoleMenuAuthorityReq
-	RoleMenuAuthorityResp      = pb.RoleMenuAuthorityResp
-	StatusCodeReq              = pb.StatusCodeReq
-	StatusCodeUUIDReq          = pb.StatusCodeUUIDReq
-	TenantInfo                 = pb.TenantInfo
-	TenantListReq              = pb.TenantListReq
-	TenantListResp             = pb.TenantListResp
-	TenantTreeInfo             = pb.TenantTreeInfo
-	TenantTreeListResp         = pb.TenantTreeListResp
-	UUIDReq                    = pb.UUIDReq
-	UUIDsReq                   = pb.UUIDsReq
-	UpdatePolicyReq            = pb.UpdatePolicyReq
-	UpdateProfileReq           = pb.UpdateProfileReq
-	UserInfoResp               = pb.UserInfoResp
-	UserListResp               = pb.UserListResp
+	ApiInfo               = pb.ApiInfo
+	BaseResp              = pb.BaseResp
+	BatchCreateUserReq    = pb.BatchCreateUserReq
+	ChangeDept            = pb.ChangeDept
+	ChangePasswdReq       = pb.ChangePasswdReq
+	ChangePositionReq     = pb.ChangePositionReq
+	CreateApiReq          = pb.CreateApiReq
+	CreateMenuParamReq    = pb.CreateMenuParamReq
+	CreateMenuReq         = pb.CreateMenuReq
+	CreateRoleReq         = pb.CreateRoleReq
+	CreateStationReq      = pb.CreateStationReq
+	CreateTenantReq       = pb.CreateTenantReq
+	CreateTokenReq        = pb.CreateTokenReq
+	CreateUserReq         = pb.CreateUserReq
+	Empty                 = pb.Empty
+	GetApiListResp        = pb.GetApiListResp
+	GetApiResp            = pb.GetApiResp
+	GetMenuListReq        = pb.GetMenuListReq
+	GetMenuListResp       = pb.GetMenuListResp
+	GetParamsByMenuResp   = pb.GetParamsByMenuResp
+	GetRoleResp           = pb.GetRoleResp
+	GetStationByUserResp  = pb.GetStationByUserResp
+	GetStationListResp    = pb.GetStationListResp
+	GetStationResp        = pb.GetStationResp
+	GetTeantListResp      = pb.GetTeantListResp
+	GetTenantResp         = pb.GetTenantResp
+	GetTokenListReq       = pb.GetTokenListReq
+	GetTokenListResp      = pb.GetTokenListResp
+	GetTokenResp          = pb.GetTokenResp
+	GrantApiToRoleReq     = pb.GrantApiToRoleReq
+	GrantMenuToRoleReq    = pb.GrantMenuToRoleReq
+	GrantMenusToRoleReq   = pb.GrantMenusToRoleReq
+	GrantRoleReq          = pb.GrantRoleReq
+	GrantRoleToStationReq = pb.GrantRoleToStationReq
+	IDReq                 = pb.IDReq
+	IDResp                = pb.IDResp
+	IDsReq                = pb.IDsReq
+	IDsResp               = pb.IDsResp
+	LoginReq              = pb.LoginReq
+	LoginResp             = pb.LoginResp
+	MenuInfo              = pb.MenuInfo
+	MenuParamInfo         = pb.MenuParamInfo
+	Meta                  = pb.Meta
+	PageInfoReq           = pb.PageInfoReq
+	ReplaceUserReq        = pb.ReplaceUserReq
+	RoleInfo              = pb.RoleInfo
+	RoleListResp          = pb.RoleListResp
+	StationInfo           = pb.StationInfo
+	StationUserReq        = pb.StationUserReq
+	StatusCodeReq         = pb.StatusCodeReq
+	TSRU                  = pb.TSRU
+	TenantInfo            = pb.TenantInfo
+	TokenInfo             = pb.TokenInfo
+	UpdateApiReq          = pb.UpdateApiReq
+	UpdateMenuParamsReq   = pb.UpdateMenuParamsReq
+	UpdateMenuReq         = pb.UpdateMenuReq
+	UpdatePeriodReq       = pb.UpdatePeriodReq
+	UpdateProfileReq      = pb.UpdateProfileReq
+	UpdateRoleReq         = pb.UpdateRoleReq
+	UpdateStationReq      = pb.UpdateStationReq
+	UpdateStatusReq       = pb.UpdateStatusReq
+	UpdateTenantReq       = pb.UpdateTenantReq
+	UserInfoResp          = pb.UserInfoResp
+	UserListResp          = pb.UserListResp
 
 	Api interface {
-		CreateOrUpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		CreateApi(ctx context.Context, in *CreateApiReq, opts ...grpc.CallOption) (*BaseResp, error)
 		DeleteApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
-		GetApiList(ctx context.Context, in *ApiPageReq, opts ...grpc.CallOption) (*ApiListResp, error)
+		UpdateApi(ctx context.Context, in *UpdateApiReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GetApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiResp, error)
+		GetApiListByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiListResp, error)
 	}
 
 	defaultApi struct {
@@ -74,9 +97,9 @@ func NewApi(cli zrpc.Client) Api {
 	}
 }
 
-func (m *defaultApi) CreateOrUpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+func (m *defaultApi) CreateApi(ctx context.Context, in *CreateApiReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewApiClient(m.cli.Conn())
-	return client.CreateOrUpdateApi(ctx, in, opts...)
+	return client.CreateApi(ctx, in, opts...)
 }
 
 func (m *defaultApi) DeleteApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
@@ -84,7 +107,17 @@ func (m *defaultApi) DeleteApi(ctx context.Context, in *IDReq, opts ...grpc.Call
 	return client.DeleteApi(ctx, in, opts...)
 }
 
-func (m *defaultApi) GetApiList(ctx context.Context, in *ApiPageReq, opts ...grpc.CallOption) (*ApiListResp, error) {
+func (m *defaultApi) UpdateApi(ctx context.Context, in *UpdateApiReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := pb.NewApiClient(m.cli.Conn())
-	return client.GetApiList(ctx, in, opts...)
+	return client.UpdateApi(ctx, in, opts...)
+}
+
+func (m *defaultApi) GetApi(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiResp, error) {
+	client := pb.NewApiClient(m.cli.Conn())
+	return client.GetApi(ctx, in, opts...)
+}
+
+func (m *defaultApi) GetApiListByMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*GetApiListResp, error) {
+	client := pb.NewApiClient(m.cli.Conn())
+	return client.GetApiListByMenu(ctx, in, opts...)
 }
