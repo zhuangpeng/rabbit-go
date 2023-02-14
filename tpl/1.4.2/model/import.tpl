@@ -6,7 +6,7 @@ import (
 	{{if .time}}"time"{{end}}
 
 	globalkey "github.com/zhuangpeng/rabbit-go/pkg/globalKey"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr/statuserr"
+	"github.com/zhuangpeng/rabbit-go/pkg/statuserr"
 	"github.com/zhuangpeng/rabbit-go/pkg/i18n"
 	"github.com/zhuangpeng/rabbit-go/pkg/utils/dbx"
 

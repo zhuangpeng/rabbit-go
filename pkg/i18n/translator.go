@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/status"
 
@@ -64,20 +64,20 @@ func (l *Translator) TransError(lang string, err error) error {
 			message = err.Error()
 		}
 		return status.Error(status.Code(err), message)
-	} else if codeErr, ok := err.(*xerr.CodeError); ok {
+	} else if codeErr, ok := err.(*errorx.CodeError); ok {
 		message, e := l.MatchLocalizer(lang).LocalizeMessage(&i18n.Message{ID: codeErr.Error()})
 		if e != nil || message == "" {
 			message = codeErr.Error()
 		}
-		return xerr.NewCodeError(codeErr.Code, message)
-	} else if apiErr, ok := err.(*xerr.ApiError); ok {
+		return errorx.NewCodeError(codeErr.Code, message)
+	} else if apiErr, ok := err.(*errorx.ApiError); ok {
 		message, e := l.MatchLocalizer(lang).LocalizeMessage(&i18n.Message{ID: apiErr.Error()})
 		if e != nil {
 			message = apiErr.Error()
 		}
-		return xerr.NewApiError(apiErr.Code, message)
+		return errorx.NewApiError(apiErr.Code, message)
 	} else {
-		return xerr.NewApiError(http.StatusInternalServerError, "failed to translate error message")
+		return errorx.NewApiError(http.StatusInternalServerError, "failed to translate error message")
 	}
 }
 

@@ -97,9 +97,11 @@
 		"mobileAlreadyExist": "mobile already exist",
 		"emailAlreadyExist": "email already exist",
 		"userNotExist": "User does not register",
+		"mobileNotExist": "mobile not exist",
 		"wrongCaptcha": "Wrong captcha",
 		"wrongUsernameOrPassword": "Wrong username or password",
-		"requireLogin": "Please log in again"
+		"requireLogin": "Please log in again",
+		"authTypeErr": "authType error"
 	},
 	"menu": {
 		"deleteChildrenDesc": "Please delete menu's children first",

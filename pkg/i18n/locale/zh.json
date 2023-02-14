@@ -96,10 +96,16 @@
 		"userAlreadyExist": "用户名已被注册",
 		"mobileAlreadyExist": "手机号已被注册",
 		"emailAlreadyExist": "邮箱已被注册",
+		"userAlreadyExistmobileAlreadyExist": "用户名和手机号已被注册",
+		"userAlreadyExistemailAlreadyExist": "用户名和邮箱已被注册",
+		"mobileAlreadyExistemailAlreadyExist": "手机号和邮箱已被注册",
+		"userAlreadyExistmobileAlreadyExistemailAlreadyExist": "用户名、手机号和邮箱均已被注册",
+		"mobileNotExist": "手机号码不存在",
 		"userNotExist": "用户不存在",
 		"wrongCaptcha": "验证码错误",
 		"wrongUsernameOrPassword": "用户名或密码错误",
-		"requireLogin": "请重新登录"
+		"requireLogin": "请重新登录",
+		"authTypeErr": "登录类型错误"
 	},
 	"menu": {
 		"deleteChildrenDesc": "请先删除子菜单",

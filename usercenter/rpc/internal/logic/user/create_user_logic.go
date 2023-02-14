@@ -5,15 +5,14 @@ import (
 	"strings"
 
 	"github.com/zhuangpeng/rabbit-go/pkg/i18n"
+	"github.com/zhuangpeng/rabbit-go/pkg/statuserr"
 	"github.com/zhuangpeng/rabbit-go/pkg/utils"
 	"github.com/zhuangpeng/rabbit-go/pkg/utils/uuidx"
-	"github.com/zhuangpeng/rabbit-go/pkg/xerr/statuserr"
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/model"
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/internal/svc"
 	"github.com/zhuangpeng/rabbit-go/usercenter/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/stringx"
 )
 
 type CreateUserLogic struct {
@@ -51,7 +50,7 @@ func (l *CreateUserLogic) CreateUser(in *pb.CreateUserReq) (*pb.BaseResp, error)
 		return nil, statuserr.NewInvalidArgumentError(i18n.DatabaseError)
 	}
 	if err != model.ErrNotFound {
-		resperr = append(resperr, i18n.UserAlreadyExist)
+		resperr = append(resperr, "userAlreadyExist")
 	}
 
 	// mobile不可重复
@@ -61,7 +60,7 @@ func (l *CreateUserLogic) CreateUser(in *pb.CreateUserReq) (*pb.BaseResp, error)
 		return nil, statuserr.NewInvalidArgumentError(i18n.DatabaseError)
 	}
 	if err != model.ErrNotFound {
-		resperr = append(resperr, i18n.MobileAlreadyExist)
+		resperr = append(resperr, "mobileAlreadyExist")
 	}
 
 	// email不可重复
@@ -71,12 +70,12 @@ func (l *CreateUserLogic) CreateUser(in *pb.CreateUserReq) (*pb.BaseResp, error)
 		return nil, statuserr.NewInvalidArgumentError(i18n.DatabaseError)
 	}
 	if err != model.ErrNotFound {
-		resperr = append(resperr, i18n.EmailAlreadyExist)
+		resperr = append(resperr, "emailAlreadyExist")
 	}
 
 	// 合并数组中的错误信息并返回
 	if len(resperr) > 0 {
-		errstrings := strings.Join(stringx.Remove(resperr, ""), "|")
+		errstrings := "login." + strings.Join(resperr, "")
 		return nil, statuserr.NewAlreadyExistsError(errstrings)
 	}
 
