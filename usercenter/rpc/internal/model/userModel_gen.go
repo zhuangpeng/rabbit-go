@@ -11,8 +11,8 @@ import (
 
 	globalkey "github.com/zhuangpeng/rabbit-go/pkg/globalKey"
 	"github.com/zhuangpeng/rabbit-go/pkg/i18n"
-	"github.com/zhuangpeng/rabbit-go/pkg/utils/dbx"
 	"github.com/zhuangpeng/rabbit-go/pkg/statuserr"
+	"github.com/zhuangpeng/rabbit-go/pkg/utils/dbx"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -24,22 +24,24 @@ import (
 var (
 	userFieldNames          = builder.RawFieldNames(&User{})
 	userRows                = strings.Join(userFieldNames, ",")
-	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
-	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
+	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
+	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
 
-	cacheUserCenterUserIdPrefix     = "cache:userCenter:user:id:"
-	cacheUserCenterUserEmailPrefix  = "cache:userCenter:user:email:"
-	cacheUserCenterUserMobilePrefix = "cache:userCenter:user:mobile:"
-	cacheUserCenterUserNamePrefix   = "cache:userCenter:user:name:"
+	cacheUserCenterUserIdPrefix      = "cache:userCenter:user:id:"
+	cacheUserCenterUserAccountPrefix = "cache:userCenter:user:account:"
+	cacheUserCenterUserEmailPrefix   = "cache:userCenter:user:email:"
+	cacheUserCenterUserIdCardPrefix  = "cache:userCenter:user:idCard:"
+	cacheUserCenterUserMobilePrefix  = "cache:userCenter:user:mobile:"
 )
 
 type (
 	userModel interface {
 		Insert(ctx context.Context, dropZeroValue bool, session sqlx.Session, data *User) (sql.Result, error)
 		FindOne(ctx context.Context, id string) (*User, error)
+		FindOneByAccount(ctx context.Context, account string) (*User, error)
 		FindOneByEmail(ctx context.Context, email string) (*User, error)
+		FindOneByIdCard(ctx context.Context, idCard string) (*User, error)
 		FindOneByMobile(ctx context.Context, mobile string) (*User, error)
-		FindOneByName(ctx context.Context, name string) (*User, error)
 		Update(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error)
 		UpdateWithVersion(ctx context.Context, session sqlx.Session, data *User) error
 		Delete(ctx context.Context, id string) error
@@ -52,7 +54,7 @@ type (
 
 	User struct {
 		Id          string       `db:"id"`           // 用户标识
-		Name        string       `db:"name"`         // 用户名
+		Account     string       `db:"account"`      // 用户账号
 		Password    string       `db:"password"`     // 密码
 		Nickname    string       `db:"nickname"`     // 昵称
 		SideMode    string       `db:"side_mode"`    // 布局方式
@@ -67,6 +69,7 @@ type (
 		UpdatedAt   sql.NullTime `db:"updated_at"`   // 修改时间
 		DeletedAt   sql.NullTime `db:"deleted_at"`   // 删除时间
 		Revision    int64        `db:"revision"`     // 乐观锁修订版本号
+		IdCard      string       `db:"id_card"`      // 身份证号
 	}
 )
 
@@ -83,14 +86,15 @@ func (m *defaultUserModel) Delete(ctx context.Context, id string) error {
 		return err
 	}
 
+	userCenterUserAccountKey := fmt.Sprintf("%s%v", cacheUserCenterUserAccountPrefix, data.Account)
 	userCenterUserEmailKey := fmt.Sprintf("%s%v", cacheUserCenterUserEmailPrefix, data.Email)
+	userCenterUserIdCardKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdCardPrefix, data.IdCard)
 	userCenterUserIdKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdPrefix, id)
 	userCenterUserMobileKey := fmt.Sprintf("%s%v", cacheUserCenterUserMobilePrefix, data.Mobile)
-	userCenterUserNameKey := fmt.Sprintf("%s%v", cacheUserCenterUserNamePrefix, data.Name)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, userCenterUserEmailKey, userCenterUserIdKey, userCenterUserMobileKey, userCenterUserNameKey)
+	}, userCenterUserAccountKey, userCenterUserEmailKey, userCenterUserIdCardKey, userCenterUserIdKey, userCenterUserMobileKey)
 	return err
 }
 
@@ -111,12 +115,52 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id string) (*User, error
 	}
 }
 
+func (m *defaultUserModel) FindOneByAccount(ctx context.Context, account string) (*User, error) {
+	userCenterUserAccountKey := fmt.Sprintf("%s%v", cacheUserCenterUserAccountPrefix, account)
+	var resp User
+	err := m.QueryRowIndexCtx(ctx, &resp, userCenterUserAccountKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `account` = ? and deleted = ? limit 1", userRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, account, globalkey.DelStateNo); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserModel) FindOneByEmail(ctx context.Context, email string) (*User, error) {
 	userCenterUserEmailKey := fmt.Sprintf("%s%v", cacheUserCenterUserEmailPrefix, email)
 	var resp User
 	err := m.QueryRowIndexCtx(ctx, &resp, userCenterUserEmailKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `email` = ? and deleted = ? limit 1", userRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, email, globalkey.DelStateNo); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserModel) FindOneByIdCard(ctx context.Context, idCard string) (*User, error) {
+	userCenterUserIdCardKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdCardPrefix, idCard)
+	var resp User
+	err := m.QueryRowIndexCtx(ctx, &resp, userCenterUserIdCardKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `id_card` = ? and deleted = ? limit 1", userRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, idCard, globalkey.DelStateNo); err != nil {
 			return nil, err
 		}
 		return resp.Id, nil
@@ -151,37 +195,18 @@ func (m *defaultUserModel) FindOneByMobile(ctx context.Context, mobile string) (
 	}
 }
 
-func (m *defaultUserModel) FindOneByName(ctx context.Context, name string) (*User, error) {
-	userCenterUserNameKey := fmt.Sprintf("%s%v", cacheUserCenterUserNamePrefix, name)
-	var resp User
-	err := m.QueryRowIndexCtx(ctx, &resp, userCenterUserNameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `name` = ? and deleted = ? limit 1", userRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, name, globalkey.DelStateNo); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 // Insert
 // if dropZeroValue is true then filter the zero value with struct
 // if session not nil, the execute statement with transactions
 func (m *defaultUserModel) Insert(ctx context.Context, dropZeroValue bool, session sqlx.Session, data *User) (sql.Result, error) {
+	userCenterUserAccountKey := fmt.Sprintf("%s%v", cacheUserCenterUserAccountPrefix, data.Account)
 	userCenterUserEmailKey := fmt.Sprintf("%s%v", cacheUserCenterUserEmailPrefix, data.Email)
+	userCenterUserIdCardKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdCardPrefix, data.IdCard)
 	userCenterUserIdKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdPrefix, data.Id)
 	userCenterUserMobileKey := fmt.Sprintf("%s%v", cacheUserCenterUserMobilePrefix, data.Mobile)
-	userCenterUserNameKey := fmt.Sprintf("%s%v", cacheUserCenterUserNamePrefix, data.Name)
 	if dropZeroValue {
 		return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-			query, args, err := dbx.Insert(*data)
+			query, args, err := dbx.GenInsert(*data)
 			if err != nil {
 				return nil, err
 			}
@@ -189,15 +214,15 @@ func (m *defaultUserModel) Insert(ctx context.Context, dropZeroValue bool, sessi
 				return session.ExecCtx(ctx, query, args...)
 			}
 			return conn.ExecCtx(ctx, query, args...)
-		}, userCenterUserEmailKey, userCenterUserIdKey, userCenterUserMobileKey, userCenterUserNameKey)
+		}, userCenterUserAccountKey, userCenterUserEmailKey, userCenterUserIdCardKey, userCenterUserIdKey, userCenterUserMobileKey)
 	} else {
 		return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-			query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
+			query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
 			if session != nil {
-				return session.ExecCtx(ctx, query, data.Id, data.Name, data.Password, data.Nickname, data.SideMode, data.BaseColor, data.ActiveColor, data.Mobile, data.Email, data.Avatar, data.Status, data.Deleted, data.DeletedAt, data.Revision)
+				return session.ExecCtx(ctx, query, data.Id, data.Account, data.Password, data.Nickname, data.SideMode, data.BaseColor, data.ActiveColor, data.Mobile, data.Email, data.Avatar, data.Status, data.Deleted, data.DeletedAt, data.Revision, data.IdCard)
 			}
-			return conn.ExecCtx(ctx, query, data.Id, data.Name, data.Password, data.Nickname, data.SideMode, data.BaseColor, data.ActiveColor, data.Mobile, data.Email, data.Avatar, data.Status, data.Deleted, data.DeletedAt, data.Revision)
-		}, userCenterUserEmailKey, userCenterUserIdKey, userCenterUserMobileKey, userCenterUserNameKey)
+			return conn.ExecCtx(ctx, query, data.Id, data.Account, data.Password, data.Nickname, data.SideMode, data.BaseColor, data.ActiveColor, data.Mobile, data.Email, data.Avatar, data.Status, data.Deleted, data.DeletedAt, data.Revision, data.IdCard)
+		}, userCenterUserAccountKey, userCenterUserEmailKey, userCenterUserIdCardKey, userCenterUserIdKey, userCenterUserMobileKey)
 	}
 }
 
@@ -207,17 +232,18 @@ func (m *defaultUserModel) Update(ctx context.Context, session sqlx.Session, new
 	if err != nil {
 		return nil, err
 	}
+	userCenterUserAccountKey := fmt.Sprintf("%s%v", cacheUserCenterUserAccountPrefix, data.Account)
 	userCenterUserEmailKey := fmt.Sprintf("%s%v", cacheUserCenterUserEmailPrefix, data.Email)
+	userCenterUserIdCardKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdCardPrefix, data.IdCard)
 	userCenterUserIdKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdPrefix, data.Id)
 	userCenterUserMobileKey := fmt.Sprintf("%s%v", cacheUserCenterUserMobilePrefix, data.Mobile)
-	userCenterUserNameKey := fmt.Sprintf("%s%v", cacheUserCenterUserNamePrefix, data.Name)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, newData.Name, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.Id)
+			return session.ExecCtx(ctx, query, newData.Account, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.IdCard, newData.Id)
 		}
-		return conn.ExecCtx(ctx, query, newData.Name, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.Id)
-	}, userCenterUserEmailKey, userCenterUserIdKey, userCenterUserMobileKey, userCenterUserNameKey)
+		return conn.ExecCtx(ctx, query, newData.Account, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.IdCard, newData.Id)
+	}, userCenterUserAccountKey, userCenterUserEmailKey, userCenterUserIdCardKey, userCenterUserIdKey, userCenterUserMobileKey)
 
 }
 
@@ -235,18 +261,19 @@ func (m *defaultUserModel) UpdateWithVersion(ctx context.Context, session sqlx.S
 	oldRevision := data.Revision
 	newData.Revision += 1
 
+	userCenterUserAccountKey := fmt.Sprintf("%s%v", cacheUserCenterUserAccountPrefix, data.Account)
 	userCenterUserEmailKey := fmt.Sprintf("%s%v", cacheUserCenterUserEmailPrefix, data.Email)
+	userCenterUserIdCardKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdCardPrefix, data.IdCard)
 	userCenterUserIdKey := fmt.Sprintf("%s%v", cacheUserCenterUserIdPrefix, data.Id)
 	userCenterUserMobileKey := fmt.Sprintf("%s%v", cacheUserCenterUserMobilePrefix, data.Mobile)
-	userCenterUserNameKey := fmt.Sprintf("%s%v", cacheUserCenterUserNamePrefix, data.Name)
 
 	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ? and revision = ? ", m.table, userRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, newData.Name, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.Id, oldRevision)
+			return session.ExecCtx(ctx, query, newData.Account, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.IdCard, newData.Id, oldRevision)
 		}
-		return conn.ExecCtx(ctx, query, newData.Name, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.Id, oldRevision)
-	}, userCenterUserEmailKey, userCenterUserIdKey, userCenterUserMobileKey, userCenterUserNameKey)
+		return conn.ExecCtx(ctx, query, newData.Account, newData.Password, newData.Nickname, newData.SideMode, newData.BaseColor, newData.ActiveColor, newData.Mobile, newData.Email, newData.Avatar, newData.Status, newData.Deleted, newData.DeletedAt, newData.Revision, newData.IdCard, newData.Id, oldRevision)
+	}, userCenterUserAccountKey, userCenterUserEmailKey, userCenterUserIdCardKey, userCenterUserIdKey, userCenterUserMobileKey)
 	if err != nil {
 		return err
 	}

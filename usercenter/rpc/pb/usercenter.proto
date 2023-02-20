@@ -14,7 +14,7 @@ message IDResp {
   string id = 1;
 }
 
-message IDsReq {  
+message IDsReq {
   repeated string ids = 1;
 }
 
@@ -47,12 +47,11 @@ message ChangePositionReq {
 // 添加单一用户
 // 请求消息
 message CreateUserReq {
-  string name = 1;
-  string nickname = 2;
-  string password = 3;
-  string avatar = 4;
-  string mobile = 5;
-  string email = 6;
+  uint32 auth_type = 1;  // 1-手机 2-邮箱 3-身份证 4-小程序
+  string auth_key  = 2;
+  string nickname  = 5;
+  string password  = 6;
+  string avatar    = 7;
 }
 
 // 批量添加用户
@@ -98,16 +97,16 @@ message UserListResp {
 // 用户系统登录
 // 请求消息
 message LoginReq {
-  string auth_type = 1;  // 1-用户 2-手机 3-邮箱
-  string auth_key = 2;
-  string password = 3;
+  uint32 auth_type = 1;  // 1-手机 2-邮箱 3-身份证 4-小程序
+  string auth_key  = 2;
+  string password  = 3;
 }
 // 返回消息
 message LoginResp {
-  string id = 1;
-  map<string, string> role_names = 2;   // 角色键值对
+  string     id                   = 1;
+  map<string, string> role_names  = 2;  // 角色键值对
   map<string, string> role_values = 3;  // 角色键值对
-  map<string, string> depts = 4;  // 单位键值对
+  map<string, string> depts       = 4;  // 单位键值对
 }
 
 // 修改登录密码
@@ -431,20 +430,30 @@ service Menu {
 message TenantInfo {
   string id = 1;
   string parent_id = 2;
-  string name = 3;
-  string contact = 4;
-  string mobile = 5;
-  uint32 sort_no = 6;
-  uint32 status = 7;
-  int64 start_time = 8;
-  int64 end_time = 9;
-  uint32 has_child = 10;
+  string account_id = 3;
+  string name = 4;
+  string contact = 5;
+  string mobile = 6;
+  uint32 sort_no = 7;
+  uint32 status = 8;
+  int64 start_time = 9;
+  int64 end_time = 10;
+  uint32 has_child = 11;
 }
 
 // 添加租户
 // 请求消息
 message CreateTenantReq {
-  TenantInfo tenant = 1;
+  string id = 1;
+  string parent_id = 2;
+  string account_id = 3;
+  string name = 4;
+  string contact = 5;
+  string mobile = 6;
+  uint32 sort_no = 7;
+  uint32 status = 8;
+  int64 start_time = 9;
+  int64 end_time = 10;
 }
 
 // 修改租户基本信息

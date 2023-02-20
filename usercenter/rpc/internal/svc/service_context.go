@@ -6,13 +6,17 @@ import (
 )
 
 type ServiceContext struct {
-	Config     config.Config
-	UserModel  model.UserModel
+	Config       config.Config
+	UserModel    model.UserModel
+	StationModel model.StationModel
+	TenantModel  model.TenantModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config: c,
-		UserModel: model.NewUserModel(c.DatabaseConf.NewSqlConn(), c.Cache),
+		Config      : c,
+		UserModel   : model.NewUserModel(c.DatabaseConf.NewSqlConn(), c.Cache),
+		StationModel: model.NewStationModel(c.DatabaseConf.NewSqlConn(), c.Cache),
+		TenantModel:  model.NewTenantModel(c.DatabaseConf.NewSqlConn(), c.Cache),
 	}
 }

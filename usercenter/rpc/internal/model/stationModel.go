@@ -12,40 +12,40 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var _ UserModel = (*customUserModel)(nil)
+var _ StationModel = (*customStationModel)(nil)
 
 type (
-	// UserModel is an interface to be customized, add more methods here,
-	// and implement the added methods in customUserModel.
-	UserModel interface {
-		userModel
+	// StationModel is an interface to be customized, add more methods here,
+	// and implement the added methods in customStationModel.
+	StationModel interface {
+		stationModel
 		Trans(ctx context.Context, fn func(context context.Context, session sqlx.Session) error) error
 		RowBuilder() squirrel.SelectBuilder
 		CountBuilder(field string) squirrel.SelectBuilder
 		SumBuilder(field string) squirrel.SelectBuilder
-		DeleteSoft(ctx context.Context, session sqlx.Session, data *User) error
-		FindOneByQuery(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*User, error)
+		DeleteSoft(ctx context.Context, session sqlx.Session, data *Station) error
+		FindOneByQuery(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*Station, error)
 		FindSum(ctx context.Context, sumBuilder squirrel.SelectBuilder) (float64, error)
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
-		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*User, error)
-		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*User, error)
-		FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*User, error)
-		FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*User, error)
+		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Station, error)
+		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*Station, error)
+		FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*Station, error)
+		FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*Station, error)
 	}
 
-	customUserModel struct {
-		*defaultUserModel
+	customStationModel struct {
+		*defaultStationModel
 	}
 )
 
-// NewUserModel returns a model for the database table.
-func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
-	return &customUserModel{
-		defaultUserModel: newUserModel(conn, c),
+// NewStationModel returns a model for the database table.
+func NewStationModel(conn sqlx.SqlConn, c cache.CacheConf) StationModel {
+	return &customStationModel{
+		defaultStationModel: newStationModel(conn, c),
 	}
 }
 
-func (m *defaultUserModel) DeleteSoft(ctx context.Context, session sqlx.Session, data *User) error {
+func (m *defaultStationModel) DeleteSoft(ctx context.Context, session sqlx.Session, data *Station) error {
 	data.Deleted = globalkey.DelStateYes
 	now := time.Now().UnixMilli()
 	data.DeletedAt = dbx.NewNullTime(now)
@@ -55,14 +55,14 @@ func (m *defaultUserModel) DeleteSoft(ctx context.Context, session sqlx.Session,
 	return nil
 }
 
-func (m *defaultUserModel) FindOneByQuery(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*User, error) {
+func (m *defaultStationModel) FindOneByQuery(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*Station, error) {
 
 	query, values, err := rowBuilder.Where("deleted = ?", globalkey.DelStateNo).ToSql()
 	if err != nil {
 		return nil, err
 	}
 
-	var resp User
+	var resp Station
 	err = m.QueryRowNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -72,7 +72,7 @@ func (m *defaultUserModel) FindOneByQuery(ctx context.Context, rowBuilder squirr
 	}
 }
 
-func (m *defaultUserModel) FindSum(ctx context.Context, sumBuilder squirrel.SelectBuilder) (float64, error) {
+func (m *defaultStationModel) FindSum(ctx context.Context, sumBuilder squirrel.SelectBuilder) (float64, error) {
 
 	query, values, err := sumBuilder.Where("deleted = ?", globalkey.DelStateNo).ToSql()
 	if err != nil {
@@ -89,7 +89,7 @@ func (m *defaultUserModel) FindSum(ctx context.Context, sumBuilder squirrel.Sele
 	}
 }
 
-func (m *defaultUserModel) FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error) {
+func (m *defaultStationModel) FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error) {
 
 	query, values, err := countBuilder.Where("deleted = ?", globalkey.DelStateNo).ToSql()
 	if err != nil {
@@ -106,7 +106,7 @@ func (m *defaultUserModel) FindCount(ctx context.Context, countBuilder squirrel.
 	}
 }
 
-func (m *defaultUserModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*User, error) {
+func (m *defaultStationModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Station, error) {
 
 	if orderBy == "" {
 		rowBuilder = rowBuilder.OrderBy("id DESC")
@@ -119,7 +119,7 @@ func (m *defaultUserModel) FindAll(ctx context.Context, rowBuilder squirrel.Sele
 		return nil, err
 	}
 
-	var resp []*User
+	var resp []*Station
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -129,7 +129,7 @@ func (m *defaultUserModel) FindAll(ctx context.Context, rowBuilder squirrel.Sele
 	}
 }
 
-func (m *defaultUserModel) FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*User, error) {
+func (m *defaultStationModel) FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*Station, error) {
 
 	if orderBy == "" {
 		rowBuilder = rowBuilder.OrderBy("id DESC")
@@ -147,7 +147,7 @@ func (m *defaultUserModel) FindPageListByPage(ctx context.Context, rowBuilder sq
 		return nil, err
 	}
 
-	var resp []*User
+	var resp []*Station
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -157,7 +157,7 @@ func (m *defaultUserModel) FindPageListByPage(ctx context.Context, rowBuilder sq
 	}
 }
 
-func (m *defaultUserModel) FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*User, error) {
+func (m *defaultStationModel) FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*Station, error) {
 
 	if preMinId > 0 {
 		rowBuilder = rowBuilder.Where(" id < ? ", preMinId)
@@ -168,7 +168,7 @@ func (m *defaultUserModel) FindPageListByIdDESC(ctx context.Context, rowBuilder 
 		return nil, err
 	}
 
-	var resp []*User
+	var resp []*Station
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -179,7 +179,7 @@ func (m *defaultUserModel) FindPageListByIdDESC(ctx context.Context, rowBuilder 
 }
 
 // 按照id升序分页查询数据，不支持排序
-func (m *defaultUserModel) FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*User, error) {
+func (m *defaultStationModel) FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*Station, error) {
 
 	if preMaxId > 0 {
 		rowBuilder = rowBuilder.Where(" id > ? ", preMaxId)
@@ -190,7 +190,7 @@ func (m *defaultUserModel) FindPageListByIdASC(ctx context.Context, rowBuilder s
 		return nil, err
 	}
 
-	var resp []*User
+	var resp []*Station
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -201,7 +201,7 @@ func (m *defaultUserModel) FindPageListByIdASC(ctx context.Context, rowBuilder s
 }
 
 // export logic
-func (m *defaultUserModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
+func (m *defaultStationModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
 
 	return m.TransactCtx(ctx, func(ctx context.Context, session sqlx.Session) error {
 		return fn(ctx, session)
@@ -210,16 +210,16 @@ func (m *defaultUserModel) Trans(ctx context.Context, fn func(ctx context.Contex
 }
 
 // export logic
-func (m *defaultUserModel) RowBuilder() squirrel.SelectBuilder {
-	return squirrel.Select(userRows).From(m.table)
+func (m *defaultStationModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(stationRows).From(m.table)
 }
 
 // export logic
-func (m *defaultUserModel) CountBuilder(field string) squirrel.SelectBuilder {
+func (m *defaultStationModel) CountBuilder(field string) squirrel.SelectBuilder {
 	return squirrel.Select("COUNT(" + field + ")").From(m.table)
 }
 
 // export logic
-func (m *defaultUserModel) SumBuilder(field string) squirrel.SelectBuilder {
+func (m *defaultStationModel) SumBuilder(field string) squirrel.SelectBuilder {
 	return squirrel.Select("IFNULL(SUM(" + field + "),0)").From(m.table)
 }
